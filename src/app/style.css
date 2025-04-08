@@ -1,0 +1,167 @@
+.body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  line-height: 1.6;
+  color: #333;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+i {
+  font-size: 1.5rem;
+  color: #ff8a00;
+  padding: 0 0.5rem;
+}
+
+/* Header and Navbar */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.5rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  color: #ff8a00;
+}
+
+main {
+  padding-top: 5rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-links a {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, border-bottom 0.3s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 2rem;
+  margin-right: 2rem;
+}
+
+.btn {
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.btn-login {
+  border: 2px solid #ff8a00;
+  color: #ff8a00;
+  padding: 0.5rem 2em 0 2em;
+}
+
+.btn-register {
+  padding: 0.5rem 1.5rem;
+  background-color: #ff8a00;
+  color: white;
+}
+
+.auth-buttons .btn:hover {
+  transform: translateY(-3px);
+}
+
+/* Hero Section */
+
+section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f1f1f1;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #ff8a00;
+  line-height: 1.2;
+}
+
+.hero-content h1 span {
+  display: block;
+}
+
+.hero-content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.hero-content p {
+  margin-bottom: 1.5rem;
+}
+
+.hero-buttons {
+  padding: 1.5rem 0;
+  font-size: 1rem;
+}
+
+.btn-primary {
+  background-color: #ff8a00;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.btn-outline {
+  background: none;
+  color: #ff8a00;
+  border: 2px solid #ff8a00;
+  padding: 0.9rem 2rem;
+  margin-left: 2em;
+  border-radius: 5px;
+  font-size: 1rem;  
+}
+
+.nav-links {
+  gap: 0.5rem;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  padding: 0.5rem 0.7rem;
+}
