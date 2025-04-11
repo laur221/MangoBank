@@ -116,20 +116,17 @@ main {
 
 /* Hero Section */
 
-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2.2rem;
+.hero-content {
+  padding: 2rem;
   background-color: #f1f1f1;
-  position: fixed;
+  position: relative;
   width: 100%;
-  top: 0;
-  left: 0;
-  margin-top: 4rem;
+  top: -0.5rem;
+  left: -0.5rem;
 }
 
 .hero-content h1 {
+  position: relative;
   font-size: 2.5rem;
   margin-bottom: 1rem;
   color: #ff8a00;
@@ -181,3 +178,39 @@ section {
   transform: scale(1.2);
   transition: all 0.3s ease;
 }
+
+/* Features Section */
+
+.features {
+  background-color: white;
+}
+.features-text{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.features-text::after {
+  content: "";
+  position: relative;
+  top: 0.5rem;
+  width: 80px;
+  height: 4px;
+  background-color: #ff8a00;
+  border-radius: 2px;
+}
+
+.feature-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 0 1rem;
+  margin: 2rem 0;
+  background-color: white;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  float: left;
+}
+
