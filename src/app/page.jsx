@@ -33,26 +33,35 @@ export default function Home() {
                 </section>
                 <section className="features">
                     <h2 className="features-text">Our Features</h2>
-                    <div class="feature-cards">
-                        <div class="feature-card">
-                            <i class="fas fa-user-plus fa-3x"></i>
+                    <div className="feature-cards">
+                        <div className="feature-card">
+                            <i className="fas fa-user-plus fa-3x"></i>
                             <h3>Easy Registration</h3>
                             <p>Create your account in minutes with our simple registration process.</p>
                         </div>
-                        <div class="feature-card">
-                            <i class="fas fa-wallet fa-3x"></i>
+                        <div className="feature-card">
+                            <i className="fas fa-wallet fa-3x"></i>
                             <h3>Balance Tracking</h3>
                             <p>Monitor your account balance in real-time with our intuitive dashboard.</p>
                         </div>
-                        <div class="feature-card">
-                            <i class="fas fa-exchange-alt fa-3x"></i>
+                        <div className="feature-card">
+                            <i className="fas fa-exchange-alt fa-3x"></i>
                             <h3>Quick Transfers</h3>
                             <p>Transfer money to other accounts instantly with just a few clicks.</p>
                         </div>
-                        <div class="feature-card">
-                            <i class="fas fa-shield-alt fa-3x"></i>
+                        <div className="feature-card">
+                            <i className="fas fa-shield-alt fa-3x"></i>
                             <h3>Secure Banking</h3>
                             <p>Your financial data is protected with our state-of-the-art security measures.</p>
+                        </div>
+                    </div>
+                </section>
+                <section id="about" className="about">
+                    <h2 className="about-title">About MangoBank</h2>
+                    <div className="about-content">
+                        <div className="about-text">
+                            <p>MangoBank is a modern banking solution designed to make financial management simple and accessible to everyone. Our platform provides a seamless banking experience with cutting-edge technology.</p>
+                            <p>Founded with the vision of revolutionizing traditional banking, we strive to offer innovative services that cater to the evolving needs of our customers.</p>
                         </div>
                     </div>
                 </section>

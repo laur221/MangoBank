@@ -184,11 +184,13 @@ main {
 .features {
   background-color: white;
 }
-.features-text{
+
+.features-text {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .features-text::after {
   content: "";
   position: relative;
@@ -199,11 +201,14 @@ main {
   border-radius: 2px;
 }
 
-.feature-card {
+.feature-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
   padding: 0 1rem;
+}
+
+.feature-card {
   margin: 2rem 0;
   background-color: white;
   border-radius: 8px;
@@ -211,6 +216,56 @@ main {
   text-align: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  float: left;
 }
 
+.feature-card:hover {
+  transform: translateY(-10px);
+}
+
+.feature-card i {
+  color: #ff8a00;
+  margin-bottom: 1.5rem;
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333333;
+}
+
+.feature-card p {
+  color: #6c757d;
+}
+
+/* About Section */
+
+.about {
+  background-color: #F1F3F5;
+  padding: 1rem;
+}
+
+.about-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.about-title::after {
+  content: "";
+  position: relative;
+  top: 0.5rem;
+  width: 80px;
+  height: 4px;
+  background-color: #ff8a00;
+  border-radius: 2px;
+}
+
+.about-text {
+    flex: 1;
+}
+
+.about-text p {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: #333333
+}
