@@ -1,6 +1,6 @@
 export default function Home() {
     return (
-        <div className="body">
+        <div>
             <header>
                 <nav className="navbar">
                     <div className="logo">
@@ -60,8 +60,87 @@ export default function Home() {
                     <h2 className="about-title">About MangoBank</h2>
                     <div className="about-content">
                         <div className="about-text">
-                            <p>MangoBank is a modern banking solution designed to make financial management simple and accessible to everyone. Our platform provides a seamless banking experience with cutting-edge technology.</p>
-                            <p>Founded with the vision of revolutionizing traditional banking, we strive to offer innovative services that cater to the evolving needs of our customers.</p>
+                            <p>MangoBank is a modern banking solution designed to make financial management simple and accessible to everyone.<br></br> Our platform provides a seamless banking experience with cutting-edge technology.</p>
+                            <p>Founded with the vision of revolutionizing traditional banking, we strive to offer innovative services that cater <br></br>to the evolving needs of our customers.</p>
+                        </div>
+                    </div>
+                </section>
+                <section id="contact" className="contact">
+                    <h2 className="contact-title">Contact Us</h2>
+                    <div className="contact-container">
+                        <div className="contact-info">
+                            <div className="contact-item">
+                                <i className="fas fa-map-marker-alt"></i>
+                                <p>Str. Puskin 38</p>
+                            </div>
+                            <div className="contact-item">
+                                <i className="fas fa-phone"></i>
+                                <p>+373 69-469-917</p>
+                            </div>
+                            <div className="contact-item">
+                                <i className="fas fa-envelope"></i>
+                                <p>info@mangobank.com</p>
+                            </div>
+                        </div>
+                        <form className="contact-form">
+                            <div className="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" name="name" required></input>
+                            </div>
+                            <div className="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required></input>
+                            </div>
+                            <div className="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" className="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </section>
+                <section className="footer">
+                    <div className="footer-content">
+                        <div className="footer-logo">
+                            <h2><i className="fas fa-university"></i> MangoBank</h2>
+                            <p>Banking Made Simple</p>
+                        </div>
+                        <div className="footer-links">
+                            <div className="footer-column">
+                                <h3>Quick Links</h3>
+                                <ul>
+                                    <li><a href="index.html">Home</a></li>
+                                    <li><a href="#features">Features</a></li>
+                                    <li><a href="#about">About Us</a></li>
+                                    <li><a href="#contact">Contact</a></li>
+                                </ul>
+                            </div>
+                            <div className="footer-column">
+                                <h3>Banking</h3>
+                                <ul>
+                                    <li><a href="login.html">Login</a></li>
+                                    <li><a href="register.html">Register</a></li>
+                                    <li><a href="#">Personal Banking</a></li>
+                                    <li><a href="#">Business Banking</a></li>
+                                </ul>
+                            </div>
+                            <div className="footer-column">
+                                <h3>Legal</h3>
+                                <ul>
+                                    <li><a href="#">Terms of Service</a></li>
+                                    <li><a href="#">Privacy Policy</a></li>
+                                    <li><a href="#">Security</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="footer-bottom">
+                        <p>&copy; <span id="current-year"></span> MangoBank. All rights reserved.</p>
+                        <div className="social-icons">
+                            <a href="#"><i className="fab fa-facebook"></i></a>
+                            <a href="#"><i className="fab fa-twitter"></i></a>
+                            <a href="#"><i className="fab fa-instagram"></i></a>
+                            <a href="#"><i className="fab fa-linkedin"></i></a>
                         </div>
                     </div>
                 </section>
