@@ -20,18 +20,18 @@ export default function Home() {
                 </nav>
             </header>
             <main>
-                <section className="hero-content">
+                <section id="hero" className="hero-content">
                     <div>
                         <h1>Welcome to <span>MangoBank</span></h1>
                         <h2>Banking Mage Simple</h2>
                         <p>Manage your finances easily with our modern banking solutions.</p>
                         <div className="hero-buttons">
-                            <a href="#" className="btn-start">Get Started</a>
-                            <a href="#" className="btn-learn">Learn More</a>
+                            <a href="./login/page.jsx" className="btn-start">Get Started</a>
+                            <a href="#features" className="btn-learn">Learn More</a>
                         </div>
                     </div>
                 </section>
-                <section className="features">
+                <section id="features" className="features">
                     <h2 className="features-text">Our Features</h2>
                     <div className="feature-cards">
                         <div className="feature-card">
@@ -84,32 +84,34 @@ export default function Home() {
                         </div>
                         <form className="contact-form">
                             <div className="form-group">
-                                <label for="name">Name</label>
+                                <label htmlFor="name">Name</label>
                                 <input type="text" id="name" name="name" required></input>
                             </div>
                             <div className="form-group">
-                                <label for="email">Email</label>
+                                <label htmlFor="email">Email</label>
                                 <input type="email" id="email" name="email" required></input>
                             </div>
                             <div className="form-group">
-                                <label for="message">Message</label>
+                                <label htmlFor="message">Message</label>
                                 <textarea id="message" name="message" rows="5" required></textarea>
                             </div>
                             <button type="submit" className="btn btn-primary">Send Message</button>
                         </form>
                     </div>
                 </section>
+            </main>
+            <footer>
                 <section className="footer">
                     <div className="footer-content">
                         <div className="footer-logo">
-                            <h2><i className="fas fa-university"></i> MangoBank</h2>
+                            <h2>MangoBank</h2>
                             <p>Banking Made Simple</p>
                         </div>
                         <div className="footer-links">
                             <div className="footer-column">
-                                <h3>Quick Links</h3>
+                                <h3>Link</h3>
                                 <ul>
-                                    <li><a href="index.html">Home</a></li>
+                                    <li><a href="./page.jsx">Home</a></li>
                                     <li><a href="#features">Features</a></li>
                                     <li><a href="#about">About Us</a></li>
                                     <li><a href="#contact">Contact</a></li>
@@ -118,33 +120,23 @@ export default function Home() {
                             <div className="footer-column">
                                 <h3>Banking</h3>
                                 <ul>
-                                    <li><a href="login.html">Login</a></li>
-                                    <li><a href="register.html">Register</a></li>
-                                    <li><a href="#">Personal Banking</a></li>
-                                    <li><a href="#">Business Banking</a></li>
+                                    <li><a href="./login/page.jsx">Login</a></li>
+                                    <li><a href="./register/page.jsx">Register</a></li>
                                 </ul>
                             </div>
                             <div className="footer-column">
                                 <h3>Legal</h3>
                                 <ul>
                                     <li><a href="#">Terms of Service</a></li>
-                                    <li><a href="#">Privacy Policy</a></li>
-                                    <li><a href="#">Security</a></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <div className="footer-bottom">
                         <p>&copy; <span id="current-year"></span> MangoBank. All rights reserved.</p>
-                        <div className="social-icons">
-                            <a href="#"><i className="fab fa-facebook"></i></a>
-                            <a href="#"><i className="fab fa-twitter"></i></a>
-                            <a href="#"><i className="fab fa-instagram"></i></a>
-                            <a href="#"><i className="fab fa-linkedin"></i></a>
-                        </div>
                     </div>
                 </section>
-            </main>
+            </footer>
         </div>
     );
 }

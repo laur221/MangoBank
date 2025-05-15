@@ -1,5 +1,10 @@
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem
+}
+
 body {
-  font-family: "Arial", sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -188,6 +193,7 @@ main {
 
 .features-text {
   display: flex;
+  font-size: 2.5rem;
   flex-direction: column;
   align-items: center;
 }
@@ -241,12 +247,13 @@ main {
 /* About Section */
 
 .about {
-  background-color: #F1F3F5;
-  padding:1rem 1rem 5rem 1rem;
+  background-color: #f1f3f5;
+  padding: 1rem 1rem 5rem 1rem;
 }
 
 .about-title {
   display: flex;
+  font-size: 2.5rem;
   flex-direction: column;
   align-items: center;
   margin-bottom: 3rem;
@@ -264,26 +271,27 @@ main {
 }
 
 .about-text {
-    flex: 1;
+  flex: 1;
 }
 
 .about-text p {
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
-    color: #333333;
-    padding-top: 0;
-    margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  color: #333333;
+  padding-top: 0;
+  margin-top: 0;
 }
 
 /* Contact Section */
 
 .contact {
-  background-color: #FFFFFF;
-  padding:1rem 1rem 5rem 1rem;
+  background-color: #ffffff;
+  padding: 1rem 1rem 5rem 1rem;
 }
 
 .contact-title {
   display: flex;
+  font-size: 2.5rem;
   flex-direction: column;
   align-items: center;
   margin-bottom: 3rem;
@@ -300,14 +308,66 @@ main {
   margin-bottom: 1rem;
 }
 
-.contact-item{
+.contact-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40rem;
+}
+
+.contact-item {
   display: flex;
   align-items: center;
-  margin-bottom: 1.5rem;  
+  margin-bottom: 1.5rem;
 }
+
 .contact-info {
- float: left;
- 
+  display: flex;
+  flex-direction: column;
+  float: none;
+  flex: 1;
+  padding-top: 1.5rem;
+  gap: 1.3rem;
+}
+
+.contact-form {
+  flex: 1;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 90%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.contact-form button {
+  background-color: #ff8a00;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.contact-form button:hover {
+  background-color: #e67e00;
+  transform: translateY(-2px);
 }
 
 /* footer */
@@ -324,25 +384,34 @@ main {
 .footer-content {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-right: 3rem;
 }
 
-.footer h2 {
+.footer-logo h2 {
   color: #ff8a00;
-  font-size: 2rem;
-  margin: -1.5rem 0 0 0;
+  font-size: 1.5rem;
+  margin: 0;
+  line-height: 1;
 }
 
-.footer-logo {
+.footer-links h3 {
+  color: #ffffff;
+  font-size: 1.7rem;
+  margin-bottom: 1rem;
+}
+
+.footer-logo p {
   color: #e9ecef;
   font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.3rem;
 }
 
 .footer-links {
   display: flex;
   gap: 3rem;
   margin-right: 3rem;
+  transition: all 0.3s ease;
 }
 
 .footer-column ul {
@@ -356,4 +425,14 @@ main {
   justify-content: space-between;
   align-items: center;
   margin: 2rem 3rem 0 0;
+}
+
+.footer-bottom p {
+  color: #e9ecef;
+}
+
+.footer-column a:hover {
+  color: #ff8a00;
+  transition: all 0.2s ease;
+
 }
