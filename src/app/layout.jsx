@@ -2,7 +2,9 @@ import "./style.css";
 
 export const metadata = {
   title: "MangoBank",
-  // logo: "#",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({ children }) {

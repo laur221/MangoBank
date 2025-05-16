@@ -1,4 +1,5 @@
 'use client';
+import './login.css'
 
 export default function Login() {
     return (
@@ -24,7 +25,7 @@ export default function Login() {
                         <button type="submit">Login</button>
                     </form>
                     <div className="footer">
-                        <p>{"Don't have an account?"} <a href="register.html">Register</a></p>
+                        <p>Don't have an account? <a href="register.html">Register</a></p>
                     </div>
                 </div>
             </div>
