@@ -1,36 +1,36 @@
 'use client';
-import './style.css';
+import Link from 'next/link';
 
 export default function Home() {
     return (
-        <div>
+        <div className='body'>
             <header>
                 <nav className="navbar">
                     <div className="logo">
-                        <i className="fas fa-university"></i>
-                        <h1>MangoBank</h1>
+                        <i className="image fas fa-university"></i>
+                        <h1 className='logo'>MangoBank</h1>
                     </div>
-                    <ul className="nav-links">
-                        <li><a className="nav-buttons" href="#hero">Home</a></li>
-                        <li><a className="nav-buttons" href="#features">Features</a></li>
-                        <li><a className="nav-buttons" href="#about">About Us</a></li>
-                        <li><a className="nav-buttons" href="#contact">Contact</a></li>
+                    <ul className="ul nav-links">
+                        <li><a className="link nav-buttons" href="#hero">Home</a></li>
+                        <li><a className="link nav-buttons" href="#features">Features</a></li>
+                        <li><a className="link nav-buttons" href="#about">About Us</a></li>
+                        <li><a className="link nav-buttons" href="#contact">Contact</a></li>
                     </ul>
                     <div className="auth-buttons">
-                        <a href="#" className="btn btn-login">Login</a>
-                        <a href="#" className="btn btn-register">Register</a>
+                        <Link href="./login" className="link btn btn-login">Login</Link>
+                        <Link href="./register" className="link btn btn-register">Register</Link>
                     </div>
                 </nav>
             </header>
-            <main>
+            <main className='main'>
                 <section id="hero" className="hero-content">
                     <div>
-                        <h1>Welcome to <span>MangoBank</span></h1>
-                        <h2>Banking Mage Simple</h2>
-                        <p>Manage your finances easily with our modern banking solutions.</p>
+                        <h1 className='h1'>Welcome to <span className='span'>MangoBank</span></h1>
+                        <h2 className='detail'>Banking Mage Simple</h2>
+                        <p className='p'>Manage your finances easily with our modern banking solutions.</p>
                         <div className="hero-buttons">
-                            <a href="./login/page.jsx" className="btn-start">Get Started</a>
-                            <a href="#features" className="btn-learn">Learn More</a>
+                            <Link href="./login" className="link btn-start">Get Started</Link>
+                            <a href="#features" className="link btn-learn">Learn More</a>
                         </div>
                     </div>
                 </section>
@@ -38,24 +38,24 @@ export default function Home() {
                     <h2 className="features-text">Our Features</h2>
                     <div className="feature-cards">
                         <div className="feature-card">
-                            <i className="fas fa-user-plus fa-3x"></i>
-                            <h3>Easy Registration</h3>
-                            <p>Create your account in minutes with our simple registration process.</p>
+                            <i className="image fas fa-user-plus fa-3x"></i>
+                            <h3 className='h3'>Easy Registration</h3>
+                            <p className='p'>Create your account in minutes with our simple registration process.</p>
                         </div>
                         <div className="feature-card">
-                            <i className="fas fa-wallet fa-3x"></i>
-                            <h3>Balance Tracking</h3>
-                            <p>Monitor your account balance in real-time with our intuitive dashboard.</p>
+                            <i className="image fas fa-wallet fa-3x"></i>
+                            <h3 className='h3'>Balance Tracking</h3>
+                            <p className='p'>Monitor your account balance in real-time with our intuitive dashboard.</p>
                         </div>
                         <div className="feature-card">
-                            <i className="fas fa-exchange-alt fa-3x"></i>
-                            <h3>Quick Transfers</h3>
-                            <p>Transfer money to other accounts instantly with just a few clicks.</p>
+                            <i className="image fas fa-exchange-alt fa-3x"></i>
+                            <h3 className='h3'>Quick Transfers</h3>
+                            <p className='p'>Transfer money to other accounts instantly with just a few clicks.</p>
                         </div>
                         <div className="feature-card">
-                            <i className="fas fa-shield-alt fa-3x"></i>
-                            <h3>Secure Banking</h3>
-                            <p>Your financial data is protected with our state-of-the-art security measures.</p>
+                            <i className="image fas fa-shield-alt fa-3x"></i>
+                            <h3 className='h3'>Secure Banking</h3>
+                            <p className='p'>Your financial data is protected with our state-of-the-art security measures.</p>
                         </div>
                     </div>
                 </section>
@@ -63,8 +63,8 @@ export default function Home() {
                     <h2 className="about-title">About MangoBank</h2>
                     <div className="about-content">
                         <div className="about-text">
-                            <p>MangoBank is a modern banking solution designed to make financial management simple and accessible to everyone.<br></br> Our platform provides a seamless banking experience with cutting-edge technology.</p>
-                            <p>Founded with the vision of revolutionizing traditional banking, we strive to offer innovative services that cater <br></br>to the evolving needs of our customers.</p>
+                            <p className='p'>MangoBank is a modern banking solution designed to make financial management simple and accessible to everyone.<br></br> Our platform provides a seamless banking experience with cutting-edge technology.</p>
+                            <p className='p'>Founded with the vision of revolutionizing traditional banking, we strive to offer innovative services that cater <br></br>to the evolving needs of our customers.</p>
                         </div>
                     </div>
                 </section>
@@ -73,30 +73,30 @@ export default function Home() {
                     <div className="contact-container">
                         <div className="contact-info">
                             <div className="contact-item">
-                                <i className="fas fa-map-marker-alt"></i>
-                                <p>Str. Puskin 38</p>
+                                <i className="image fas fa-map-marker-alt"></i>
+                                <p className='p'>Str. Puskin 38</p>
                             </div>
                             <div className="contact-item">
-                                <i className="fas fa-phone"></i>
-                                <p>+373 69-469-917</p>
+                                <i className="image fas fa-phone"></i>
+                                <p className='p'>+373 69-469-917</p>
                             </div>
                             <div className="contact-item">
-                                <i className="fas fa-envelope"></i>
-                                <p>info@mangobank.com</p>
+                                <i className="image fas fa-envelope"></i>
+                                <p className='p'>info@mangobank.com</p>
                             </div>
                         </div>
                         <form className="contact-form">
                             <div className="form-group">
-                                <label htmlFor="name">Name</label>
-                                <input type="text" id="name" name="name" required></input>
+                                <label className='label' htmlFor="name">Name</label>
+                                <input className="form" type="text" id="name" name="name" required></input>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="email">Email</label>
-                                <input type="email" id="email" name="email" required></input>
+                                <label className='label' htmlFor="email">Email</label>
+                                <input className="form" type="email" id="email" name="email" required></input>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="message">Message</label>
-                                <textarea id="message" name="message" rows="5" required></textarea>
+                                <label className='label' htmlFor="message">Message</label>
+                                <textarea className="message" name="message" rows="5" required></textarea>
                             </div>
                             <button type="submit" className="btn btn-primary">Send Message</button>
                         </form>
@@ -107,36 +107,36 @@ export default function Home() {
                 <section className="footer">
                     <div className="footer-content">
                         <div className="footer-logo">
-                            <h2>MangoBank</h2>
-                            <p>Banking Made Simple</p>
+                            <h2 className='h2'>MangoBank</h2>
+                            <p className='p'>Banking Made Simple</p>
                         </div>
                         <div className="footer-links">
                             <div className="footer-column">
-                                <h3>Link</h3>
-                                <ul>
-                                    <li><a href="./page.jsx">Home</a></li>
-                                    <li><a href="#features">Features</a></li>
-                                    <li><a href="#about">About Us</a></li>
-                                    <li><a href="#contact">Contact</a></li>
+                                <h3 className='h3'>Link</h3>
+                                <ul className="ul">
+                                    <li><a className="link" href="#hero">Home</a></li>
+                                    <li><a className="link" href="#features">Features</a></li>
+                                    <li><a className="link" href="#about">About Us</a></li>
+                                    <li><a className="link" href="#contact">Contact</a></li>
                                 </ul>
                             </div>
                             <div className="footer-column">
-                                <h3>Banking</h3>
-                                <ul>
-                                    <li><a href="./login/page.jsx">Login</a></li>
-                                    <li><a href="./register/page.jsx">Register</a></li>
+                                <h3 className='h3'>Banking</h3>
+                                <ul className="ul">
+                                    <li><Link className='link' href="./login">Login</Link></li>
+                                    <li><Link className='link'  href="./register">Register</Link></li>
                                 </ul>
                             </div>
                             <div className="footer-column">
-                                <h3>Legal</h3>
-                                <ul>
-                                    <li><a href="#">Terms of Service</a></li>
+                                <h3 className='h3'>Legal</h3>
+                                <ul className="ul">
+                                    <li><a className="link" href="#">Terms of Service</a></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <div className="footer-bottom">
-                        <p>&copy; <span id="current-year"></span> MangoBank. All rights reserved.</p>
+                        <p className='p'>&copy; <span id="current-year"></span> MangoBank. All rights reserved.</p>
                     </div>
                 </section>
             </footer>

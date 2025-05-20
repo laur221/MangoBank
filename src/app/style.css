@@ -1,6 +1,6 @@
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem
+  scroll-padding-top: 5rem;
 }
 
 body {
@@ -14,18 +14,18 @@ body {
   overflow-x: hidden;
 }
 
-a {
+.link {
   text-decoration: none;
   color: inherit;
 }
 
-ul {
+.ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-i {
+.image {
   font-size: 1.5rem;
   color: #ff8a00;
   padding: 0 0.5rem;
@@ -54,7 +54,7 @@ i {
   color: #ff8a00;
 }
 
-main {
+.main {
   padding-top: 5rem;
 }
 
@@ -131,7 +131,7 @@ main {
   left: -0.5rem;
 }
 
-.hero-content h1 {
+.h1 {
   position: relative;
   font-size: 2.5rem;
   margin-bottom: 1rem;
@@ -139,11 +139,11 @@ main {
   line-height: 1.2;
 }
 
-.hero-content h1 span {
+.span {
   display: block;
 }
 
-.hero-content h2 {
+.detail {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   color: #555;
@@ -338,14 +338,14 @@ main {
   margin-bottom: 1rem;
 }
 
-.form-group label {
+.label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
 
-.form-group input,
-.form-group textarea {
+.form,
+.message {
   width: 90%;
   padding: 0.75rem;
   border: 1px solid #ddd;
@@ -386,20 +386,20 @@ main {
   justify-content: space-between;
 }
 
-.footer-logo h2 {
+.h2 {
   color: #ff8a00;
   font-size: 1.5rem;
   margin: 0;
   line-height: 1;
 }
 
-.footer-links h3 {
+.h3 {
   color: #ffffff;
   font-size: 1.7rem;
   margin-bottom: 1rem;
 }
 
-.footer-logo p {
+.footer-logo .p {
   color: #e9ecef;
   font-size: 1rem;
   display: flex;
@@ -414,7 +414,7 @@ main {
   transition: all 0.3s ease;
 }
 
-.footer-column ul {
+.footer-column .ul {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -427,12 +427,11 @@ main {
   margin: 2rem 3rem 0 0;
 }
 
-.footer-bottom p {
+.footer-bottom .p {
   color: #e9ecef;
 }
 
-.footer-column a:hover {
+.footer-column .link:hover {
   color: #ff8a00;
-  transition: all 0.2s ease;
-
+  transition: all 0.4s ease;
 }

@@ -1,4 +1,5 @@
-import "./style.css";
+import './style.css'
+
 
 export const metadata = {
   title: "MangoBank",
