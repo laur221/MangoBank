@@ -7,8 +7,8 @@ export default function Register() {
         <div>
             <div className="container">
                 <div className="login-card">
-                    <h1>Create Your Account</h1>
-                    <p>Join MangoBank today and take control of your finances.</p>
+                    <h1 className='textlogreg'>Create Your Account</h1>
+                    <p className='hellotext'>Join MangoBank today and take control of your finances.</p>
                     <form id="loginForm">
                         <label htmlFor="username">Full Name</label>
                         <input type="username" id="username" placeholder="Enter your username" required />
@@ -28,7 +28,7 @@ export default function Register() {
                             </label>
                         </div>
 
-                        <button type="submit">Login</button>
+                        <button type="submit">Register</button>
                     </form>
                     <div className="login">
                         <p>Already have an account? <Link href="../login">Login</Link></p>

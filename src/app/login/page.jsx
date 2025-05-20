@@ -7,8 +7,8 @@ export default function LoginPage() {
         <div>
             <div className="container">
                 <div className="login-card">
-                    <h1 className='logintext'>Login to Your Account</h1>
-                    <p>Welcome back! Please enter your credentials to access your account.</p>
+                    <h1 className='textlogreg'>Login to Your Account</h1>
+                    <p className='hellotext'>Welcome back! Please enter your credentials to access your account.</p>
                     <form id="loginForm">
                         <label htmlFor="email">Email</label>
                         <input type="email" id="email" placeholder="Enter your email" required />
