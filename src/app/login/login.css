@@ -115,3 +115,24 @@ button:hover {
 .register a:hover, .login a:hover {
     text-decoration: underline;
 }
+
+.checkbox-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin: -1rem 0 0.5rem -0.75rem;
+}
+
+.spanlog {
+    color: #333333;
+    font-weight: 500;
+    margin: 0;
+}
+
+.forgot_check {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}

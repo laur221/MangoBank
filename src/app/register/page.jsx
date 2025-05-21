@@ -1,5 +1,8 @@
 'use client';
 import Link from 'next/link';
+import * as React from 'react';
+import { pink } from '@mui/material/colors';
+import Checkbox from '@mui/material/Checkbox';
 import './register.css'
 
 export default function Register() {
@@ -22,10 +25,9 @@ export default function Register() {
                         <label htmlFor="confirm-password">Confirm Password</label>
                         <input type="passwordrepeat" id="confirm-password" placeholder="Confirm your password" required />
 
-                        <div className="form-group">
-                            <label className='remember'>
-                                <input type="checkbox" id="remember-me" /><p>I agree to the Terms & Conditions</p>
-                            </label>
+                        <div className="checkbox-group">
+                            <Checkbox defaultSelected color="warning"/>
+                            <span className='spanreg'>I agree to the Terms & Conditions</span>
                         </div>
 
                         <button type="submit">Register</button>

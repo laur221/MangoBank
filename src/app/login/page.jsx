@@ -1,6 +1,9 @@
 'use client';
 import './login.css';
 import Link from 'next/link';
+import Checkbox from '@mui/material/Checkbox';
+import * as React from 'react';
+
 
 export default function LoginPage() {
     return (
@@ -16,10 +19,11 @@ export default function LoginPage() {
                         <label htmlFor="password">Password</label>
                         <input type="password" id="password" placeholder="Enter your password" required />
 
-                        <div className="form-group">
-                            <label className='remember'>
-                                <input type="checkbox" id="remember-me" /><p>Remember me</p>
-                            </label>
+                        <div className="checkbox-group">
+                            <div>
+                                <Checkbox defaultSelected color="warning" />
+                                <span className='spanlog'>Remember me</span>
+                            </div>
                             <a className="forgot" href="#">Forgot password?</a>
                         </div>
 
