@@ -1,20 +1,26 @@
 'use client';
 import Link from 'next/link';
-import * as React from 'react';
-import { pink } from '@mui/material/colors';
 import Checkbox from '@mui/material/Checkbox';
-import './register.css'
+import * as React from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Register() {
+    const router = useRouter();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        router.push('./dashboard');
+    };
+
     return (
         <div>
             <div className="container">
                 <div className="login-card">
                     <h1 className='textlogreg'>Create Your Account</h1>
                     <p className='hellotext'>Join MangoBank today and take control of your finances.</p>
-                    <form id="loginForm">
+                    <form id="loginForm" onSubmit={handleSubmit}>
                         <label htmlFor="username">Full Name</label>
-                        <input type="username" id="username" placeholder="Enter your username" required />
+                        <input type="text" id="username" placeholder="Enter your username" required />
 
                         <label htmlFor="email">Email</label>
                         <input type="email" id="email" placeholder="Enter your email" required />
@@ -23,17 +29,17 @@ export default function Register() {
                         <input type="password" id="password" placeholder="Enter your password" required />
 
                         <label htmlFor="confirm-password">Confirm Password</label>
-                        <input type="passwordrepeat" id="confirm-password" placeholder="Confirm your password" required />
+                        <input type="password" id="confirm-password" placeholder="Confirm your password" required />
 
                         <div className="checkbox-group">
-                            <Checkbox defaultSelected color="warning"/>
+                            <Checkbox defaultSelected color="warning" required/>
                             <span className='spanreg'>I agree to the Terms & Conditions</span>
                         </div>
 
-                        <button type="submit">Register</button>
+                        <button className='button' type="submit" href="./dashboard">Register</button>
                     </form>
                     <div className="login">
-                        <p>Already have an account? <Link href="../login">Login</Link></p>
+                        <p>Already have an account? <Link href="./login">Login</Link></p>
                     </div>
                 </div>
             </div>
