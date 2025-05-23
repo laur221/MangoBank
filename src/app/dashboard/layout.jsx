@@ -2,7 +2,7 @@ import './user_interface.css'
 
 
 export const metadata = {
-  title: "MangoBank",
+  title: "Dashboard",
   icons: {
     icon: '/favicon.ico',
   },

@@ -2,7 +2,7 @@ import './login.css'
 
 
 export const metadata = {
-  title: "MangoBank",
+  title: "Login",
   icons: {
     icon: '/favicon.ico',
   },

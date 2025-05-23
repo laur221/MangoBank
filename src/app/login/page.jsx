@@ -27,7 +27,7 @@ export default function LoginPage() {
 
                         <div className="checkbox-group-login">
                             <div>
-                                <Checkbox defaultSelected color="warning" required/>
+                                <Checkbox defaultSelected color="warning"/>
                                 <span className='spanlog'>Remember me</span>
                             </div>
                             <a className="forgot" href="#">Forgot password?</a>
