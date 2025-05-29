@@ -1,6 +1,5 @@
 import './user_interface.css'
 
-
 export const metadata = {
   title: "Dashboard",
   icons: {
