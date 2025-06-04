@@ -85,18 +85,21 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    padding:0;
 }
 
-.sidebar-nav li {
+.sidebar-nav ol {
     border-radius: 8px;
     transition: background-color 0.3s ease;
+    padding: 0;
+
 }
 
-.sidebar-nav li.active {
+.sidebar-nav ol.active {
     background-color: #ff8a00;
 }
 
-.sidebar-nav li:hover:not(.active) {
+.sidebar-nav ol:hover:not(.active) {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -114,16 +117,16 @@ body {
     text-align: center;
 }
 
-.sidebar-nav li.logout {
+.sidebar-nav ol.logout {
     margin-top: auto;
     color: #f44336;
 }
 
-.sidebar-nav li.logout a {
+.sidebar-nav ol.logout a {
     color: rgba(255, 255, 255, 0.9);
 }
 
-.sidebar-nav li.logout:hover {
+.sidebar-nav ol.logout:hover {
     background-color: rgba(244, 67, 54, 0.2);
 }
 
@@ -167,7 +170,7 @@ body {
 
 /* Dashboard Content */
 .dashboard-content {
-    padding: 0 0 0 2rem;
+    padding: 0 0 0 3rem;
 }
 
 .page-title {
@@ -182,12 +185,14 @@ body {
 }
 
 .btn-primary {
-    background-color: #ff8a00;
-    color: white;
-    border: none;
-    width: 200%;
+    padding: 0.75rem 1.5rem;
     border-radius: 10px;
-    height: 2.4rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background-color: #ff8a00;
+    border: none;
+    cursor: pointer;
 }
 
 .btn-primary:hover {
@@ -201,10 +206,11 @@ body {
     color:#070707;
     border-color: transparent;
 }
+
 /* Account Overview Cards */
 .account-overview {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(0, 0.33fr));
     gap: 1.5rem;
     margin-bottom: 2.5rem;
 }
@@ -245,16 +251,16 @@ body {
 }
 
 .card-content h3 {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     color: #6c757d;
-    margin-bottom: 0.5rem;
+    margin:0 0 0.8rem 0;
 }
 
-.balance, .amount {
+.amount {
     font-size: 1.8rem;
     font-weight: 700;
     color: #333333;
-    margin-bottom: 0.25rem;
+    margin: 0rem 0 0.5rem 0;
 }
 
 .card-subtitle {

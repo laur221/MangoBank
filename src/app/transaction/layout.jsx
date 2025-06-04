@@ -1,4 +1,4 @@
-import './dashboard.css'
+import './transaction.css'
 
 export const metadata = {
   title: "Dashboard",

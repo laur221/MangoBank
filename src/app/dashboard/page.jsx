@@ -1,7 +1,6 @@
 'use client';
 import Link from 'next/link';
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
 export default function Dashboard() {
@@ -21,24 +20,24 @@ export default function Dashboard() {
                     </div>
                     <nav className="sidebar-nav">
                         <ul>
-                            <li className="active">
-                                <Link className='link' href="/dashboard"><i className="fas fa-home"></i> Dashboard</Link>
-                            </li>
-                            <li>
-                                <Link className='link' href="#"><i className="fas fa-exchange-alt"></i> Transactions</Link>
-                            </li>
-                            <li>
+                            <ol className="active">
+                                <Link className='link' href="#"><i className="fas fa-home"></i> Dashboard</Link>
+                            </ol>
+                            <ol>
+                                <Link className='link' href="./transaction"><i className="fas fa-exchange-alt"></i> Transactions</Link>
+                            </ol>
+                            <ol>
                                 <Link className='link' href="#"><i className="fas fa-credit-card"></i> Cards</Link>
-                            </li>
-                            <li>
+                            </ol>
+                            <ol>
                                 <Link className='link' href="#"><i className="fas fa-user-cog"></i> Profile</Link>
-                            </li>
-                            <li>
+                            </ol>
+                            <ol>
                                 <Link className='link' href="#"><i className="fas fa-cog"></i> Settings</Link>
-                            </li>
-                            <li className="logout">
+                            </ol>
+                            <ol className="logout">
                                 <Link className='link' href="../home"><i className="fas fa-sign-out-alt"></i> Logout</Link>
-                            </li>
+                            </ol>
                         </ul>
                     </nav>
                 </aside>
@@ -62,7 +61,7 @@ export default function Dashboard() {
                                 </div>
                                 <div className="card-content">
                                     <h3>Current Balance</h3>
-                                    <p className="balance" id="current-balance">$0.00</p>
+                                    <p className="amount" id="current-balance">$0.00</p>
                                     <span className="card-subtitle">Available</span>
                                 </div>
                             </div>
@@ -96,7 +95,7 @@ export default function Dashboard() {
                                     <TextField id="recipient" label="Recipient Account" variant="standard" color="warning" type='text' placeholder='Enter account number or email' required />
                                     <TextField id="amount" label="Amount" variant="standard" color="warning" type='number' placeholder='$ 0.00' min="1" step="0.01" />
                                     <TextField id="transferNote" label="Note (Optional)" variant="standard" color="warning" type='text' />
-                                    <button type="submit" className="btn btn-primary">Send Money</button>
+                                    <button type="submit" className="btn-primary">Send Money</button>
                                 </form>
                             </div>
                         </section>
