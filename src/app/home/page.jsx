@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import TextField from '@mui/material/TextField';
 
 export default function Home() {
     return (
@@ -87,16 +88,23 @@ export default function Home() {
                         </div>
                         <form className="contact-form">
                             <div className="form-group">
-                                <label className='label' htmlFor="name">Name</label>
-                                <input className="form" type="text" id="name" name="name" required></input>
+                                <TextField className='form' id="name" label="Name" variant="standard" color="warning" type='text' placeholder='Enter your name' required />
                             </div>
                             <div className="form-group">
-                                <label className='label' htmlFor="email">Email</label>
-                                <input className="form" type="email" id="email" name="email" required></input>
+                                <TextField className='form' id="email" label="Email" variant="standard" color="warning" type='email' placeholder='Enter your name' required />
                             </div>
                             <div className="form-group">
-                                <label className='label' htmlFor="message">Message</label>
-                                <textarea className="message" name="message" rows="5" required></textarea>
+                                <TextField
+                                    className='form'
+                                    id="message"
+                                    label="Message"
+                                    multiline
+                                    rows={5}
+                                    placeholder="Enter your message"
+                                    variant="standard"
+                                    color="warning"
+                                    required
+                                />
                             </div>
                             <button type="submit" className="btn btn-primary">Send Message</button>
                         </form>
