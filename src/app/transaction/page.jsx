@@ -89,13 +89,13 @@ export default function Dashboard() {
                                 <Link className='link' href="#"><i className="fas fa-exchange-alt"></i> Transactions</Link>
                             </ol>
                             <ol>
-                                <Link className='link' href="#"><i className="fas fa-credit-card"></i> Cards</Link>
+                                <Link className='link' href="/card"><i className="fas fa-credit-card"></i> Cards</Link>
                             </ol>
                             <ol>
-                                <Link className='link' href="#"><i className="fas fa-user-cog"></i> Profile</Link>
+                                <Link className='link' href="/profile"><i className="fas fa-user-cog"></i> Profile</Link>
                             </ol>
                             <ol>
-                                <Link className='link' href="#"><i className="fas fa-cog"></i> Settings</Link>
+                                <Link className='link' href="/settings"><i className="fas fa-cog"></i> Settings</Link>
                             </ol>
                             <ol className="logout">
                                 <Link className='link' href="../home"><i className="fas fa-sign-out-alt"></i> Logout</Link>
