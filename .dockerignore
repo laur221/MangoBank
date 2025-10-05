@@ -1,0 +1,29 @@
+# Dependenciesnode_modulesnpm-debug.logyarn-error.logpackage-lock.jsonyarn.lock# Build.nextoutdist
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+.DS_Store
+*.pem
+
+# Backend folder (nu-l includem în frontend)
+backend
