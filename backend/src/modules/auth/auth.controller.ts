@@ -1,34 +1,40 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Request } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
-@Controller('auth')
+@ApiTags('Auth')
+@Controller('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post('register')
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiResponse({ status: 201, description: 'User successfully registered' })
+  @ApiResponse({ status: 409, description: 'Email already exists' })
+  register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Post('login')
+  @ApiOperation({ summary: 'Login user' })
+  @ApiResponse({ status: 200, description: 'Login successful' })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({ status: 200, description: 'Profile retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  getProfile(@Request() req) {
+    return this.authService.getProfile(req.user.userId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
-  }
 }
