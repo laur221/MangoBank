@@ -4,7 +4,9 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
+  app.enableCors(); // Enable CORS natively with NestJS
+
   const config = new DocumentBuilder()
     .setTitle('MangoBank API')
     .setDescription('Banking application API for managing accounts, cards, and transactions')

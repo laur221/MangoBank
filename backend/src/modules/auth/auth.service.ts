@@ -42,7 +42,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Incorrect email or password');
     }
 
     const payload = { sub: user.id, email: user.email };

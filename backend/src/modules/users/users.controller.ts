@@ -35,9 +35,4 @@ export class UsersController {
     return this.usersService.remove(+id);
   }
   
-  @Get('users')
-  @ApiOperation({ summary: 'Get all users' })
-  async getAllUsers() {
-    return this.usersService.getAllUsers();
-  }
 }
