@@ -33,7 +33,7 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Profile retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   getProfile(@Request() req) {
-    return this.authService.getProfile(req.user.userId);
+    return req.user;
   }
 
 

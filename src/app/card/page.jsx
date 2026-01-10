@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
+import { useEffect, useState } from 'react';
 
 export default function Card() {
     const [showDetails, setShowDetails] = React.useState(false);
@@ -14,7 +15,25 @@ export default function Card() {
     const [isAnimating, setIsAnimating] = React.useState(false);
     const [isAddingCard, setIsAddingCard] = React.useState(false);
     const [isRequestingCard, setIsRequestingCard] = React.useState(false);
-    
+    const [user, setUser] = useState({ fullName: '', email: '' });
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const response = await fetch('http://localhost:3001/Auth/profile', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+                const data = await response.json();
+                setUser(data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
+        fetchUser();
+    }, []);
+
     const toggleDetails = () => {
         if (isAnimating) return;
         

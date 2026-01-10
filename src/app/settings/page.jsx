@@ -1,9 +1,10 @@
 'use client';
 import Link from 'next/link';
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Settings() {
+    const [user, setUser] = useState({ fullName: '', email: '' });
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [show2FAModal, setShow2FAModal] = useState(false);
     const [showNotificationModal, setShowNotificationModal] = useState(false);
@@ -11,6 +12,23 @@ export default function Settings() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [emailAddress, setEmailAddress] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const response = await fetch('http://localhost:3001/Auth/profile', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+                const data = await response.json();
+                setUser(data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
+        fetchUser();
+    }, []);
 
     const handlePasswordChange = () => {
         setShowPasswordModal(true);
@@ -48,10 +66,18 @@ export default function Settings() {
         // Handle 2FA setup
         alert('Two-Factor Authentication has been enabled successfully!');
         closeModals();
+
+    const handleNotificationChange = (e) => {
+        // Handle notification preferences
+        console.log('Notification changed:', e.target.value);
     };
 
     return (
         <div>
+            <h1>Settings</h1>
+            <p>Name: {user.fullName}</p>
+            <p>Email: {user.email}</p>
+
             <div className="dashboard-container">
                 <aside className="sidebar">
                     <div className="logo">
@@ -61,8 +87,8 @@ export default function Settings() {
                         <div className="user-avatar">
                             <i className="fas fa-user-circle"></i>
                         </div>
-                        <h3 className="user-name" id="sidebar-user-name">Admin</h3>
-                        <p className="user-email" id="sidebar-user-email">admin@MangoBank.me</p>
+                        <h3 className="user-name" id="sidebar-user-name">{user.fullName}</h3>
+                        <p className="user-email" id="sidebar-user-email">{user.email}</p>
                     </div>
                     <nav className="sidebar-nav">
                         <ul>
@@ -102,6 +128,7 @@ export default function Settings() {
                             <h1>Account Settings</h1>
                             <p>Customize your account preferences and security settings.</p>
                         </div>
+                    </div>
 
                         <div className="settings-sections">
                             {/* Change Password Section */}
@@ -137,219 +164,219 @@ export default function Settings() {
                                 </div>
                             </div>
                         </div>
+                    </main>
+                </div>
+
+                {/* Password Change Modal */}
+                {showPasswordModal && (
+                    <div className="modal-overlay" onClick={closeModals}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <div className="modal-header">
+                                <h2>Change Password</h2>
+                            </div>
+                            <div className="modal-body">
+                                <div className="form-group">
+                                    <label>Current Password</label>
+                                    <input type="password" className="form-input" placeholder="Enter current password" />
+                                </div>
+                                <div className="form-group">
+                                    <label>New Password</label>
+                                    <input type="password" className="form-input" placeholder="Enter new password" />
+                                </div>
+                                <div className="form-group">
+                                    <label>Confirm New Password</label>
+                                    <input type="password" className="form-input" placeholder="Confirm new password" />
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button className="btn-save">Update Password</button>
+                                <button className="btn-cancel" onClick={closeModals}>Cancel</button>
+                            </div>
+                        </div>
                     </div>
-                </main>
+                )}
+
+                {/* Updated 2FA Modal */}
+                {show2FAModal && (
+                    <div className="modal-overlay" onClick={closeModals}>
+                        <div className="modal-content twofa-modal" onClick={(e) => e.stopPropagation()}>
+                            <div className="modal-header">
+                                <h2>Two-Factor Authentication</h2>
+                            </div>
+                            <div className="modal-body">
+                                <div className="form-group">
+                                    <label>Select Type Two-Factor Authentication</label>
+                                    <select
+                                        className="form-select"
+                                        value={selectedAuthMethod}
+                                        onChange={(e) => handleAuthMethodChange(e.target.value)}
+                                    >
+                                        <option value="authenticator">Google Authenticator</option>
+                                        <option value="phone">Phone Number</option>
+                                        <option value="email">Email</option>
+                                    </select>
+                                </div>
+
+                                {selectedAuthMethod === 'authenticator' && (
+                                    <div className="authenticator-section">
+                                        <h3>Google Authenticator</h3>
+                                        <div className="qr-code-container">
+                                            <img src="/two.png" alt="QR Code" className="qr-code" />
+                                        </div>
+                                        <p className="qr-instruction">Scan Qr-Code in Google Authenticator</p>
+                                        <div className="form-group">
+                                            <label>Code of aplication</label>
+                                            <input
+                                                type="text"
+                                                className="form-input code-input"
+                                                placeholder="Code"
+                                                value={verificationCode}
+                                                onChange={(e) => setVerificationCode(e.target.value)}
+                                                maxLength="6"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {selectedAuthMethod === 'phone' && (
+                                    <div className="phone-section">
+                                        <h3>Phone Number</h3>
+                                        <div className="form-group">
+                                            <label>Phone Number</label>
+                                            <div className="input-with-button">
+                                                <input
+                                                    type="tel"
+                                                    className="form-input"
+                                                    placeholder="+37548076488"
+                                                    value={phoneNumber}
+                                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="send-code-btn"
+                                                    onClick={handleSendCode}
+                                                >
+                                                    Send Code
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Code</label>
+                                            <input
+                                                type="text"
+                                                className="form-input code-input"
+                                                placeholder="Code"
+                                                value={verificationCode}
+                                                onChange={(e) => setVerificationCode(e.target.value)}
+                                                maxLength="6"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {selectedAuthMethod === 'email' && (
+                                    <div className="email-section">
+                                        <h3>Email</h3>
+                                        <div className="form-group">
+                                            <label>Email Address</label>
+                                            <div className="input-with-button">
+                                                <input
+                                                    type="email"
+                                                    className="form-input"
+                                                    placeholder="Test@gmail.com"
+                                                    value={emailAddress}
+                                                    onChange={(e) => setEmailAddress(e.target.value)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="send-code-btn"
+                                                    onClick={handleSendCode}
+                                                >
+                                                    Send Code
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Code</label>
+                                            <input
+                                                type="text"
+                                                className="form-input code-input"
+                                                placeholder="Code"
+                                                value={verificationCode}
+                                                onChange={(e) => setVerificationCode(e.target.value)}
+                                                maxLength="6"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="modal-footer">
+                                <button className="btn-save" onClick={handleSubmit2FA}>Add</button>
+                                <button className="btn-cancel" onClick={closeModals}>Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Notification Preferences Modal */}
+                {showNotificationModal && (
+                    <div className="modal-overlay" onClick={closeModals}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <div className="modal-header">
+                                <h2>Notification Preferences</h2>
+                            </div>
+                            <div className="modal-body">
+                                <div className="notification-options">
+                                    <div className="notification-item">
+                                        <div className="notification-info">
+                                            <h4>Transaction Alerts</h4>
+                                            <p>Get notified when money is sent or received</p>
+                                        </div>
+                                        <label className="toggle-switch">
+                                            <input type="checkbox" defaultChecked />
+                                            <span className="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div className="notification-item">
+                                        <div className="notification-info">
+                                            <h4>Security Alerts</h4>
+                                            <p>Important security notifications about your account</p>
+                                        </div>
+                                        <label className="toggle-switch">
+                                            <input type="checkbox" defaultChecked />
+                                            <span className="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div className="notification-item">
+                                        <div className="notification-info">
+                                            <h4>Marketing Emails</h4>
+                                            <p>Promotional offers and product updates</p>
+                                        </div>
+                                        <label className="toggle-switch">
+                                            <input type="checkbox" />
+                                            <span className="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div className="notification-item">
+                                        <div className="notification-info">
+                                            <h4>Monthly Statements</h4>
+                                            <p>Receive monthly account statements via email</p>
+                                        </div>
+                                        <label className="toggle-switch">
+                                            <input type="checkbox" defaultChecked />
+                                            <span className="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button className="btn-save">Save Preferences</button>
+                                <button className="btn-cancel" onClick={closeModals}>Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
-
-            {/* Password Change Modal */}
-            {showPasswordModal && (
-                <div className="modal-overlay" onClick={closeModals}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2>Change Password</h2>
-                        </div>
-                        <div className="modal-body">
-                            <div className="form-group">
-                                <label>Current Password</label>
-                                <input type="password" className="form-input" placeholder="Enter current password" />
-                            </div>
-                            <div className="form-group">
-                                <label>New Password</label>
-                                <input type="password" className="form-input" placeholder="Enter new password" />
-                            </div>
-                            <div className="form-group">
-                                <label>Confirm New Password</label>
-                                <input type="password" className="form-input" placeholder="Confirm new password" />
-                            </div>
-                        </div>
-                        <div className="modal-footer">
-                            <button className="btn-save">Update Password</button>
-                            <button className="btn-cancel" onClick={closeModals}>Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Updated 2FA Modal */}
-            {show2FAModal && (
-                <div className="modal-overlay" onClick={closeModals}>
-                    <div className="modal-content twofa-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2>Two-Factor Authentication</h2>
-                        </div>
-                        <div className="modal-body">
-                            <div className="form-group">
-                                <label>Select Type Two-Factor Authentication</label>
-                                <select 
-                                    className="form-select" 
-                                    value={selectedAuthMethod}
-                                    onChange={(e) => handleAuthMethodChange(e.target.value)}
-                                >
-                                    <option value="authenticator">Google Authenticator</option>
-                                    <option value="phone">Phone Number</option>
-                                    <option value="email">Email</option>
-                                </select>
-                            </div>
-
-                            {selectedAuthMethod === 'authenticator' && (
-                                <div className="authenticator-section">
-                                    <h3>Google Authenticator</h3>
-                                    <div className="qr-code-container">
-                                        <img src="/two.png" alt="QR Code" className="qr-code" />
-                                    </div>
-                                    <p className="qr-instruction">Scan Qr-Code in Google Authenticator</p>
-                                    <div className="form-group">
-                                        <label>Code of aplication</label>
-                                        <input 
-                                            type="text" 
-                                            className="form-input code-input" 
-                                            placeholder="Code"
-                                            value={verificationCode}
-                                            onChange={(e) => setVerificationCode(e.target.value)}
-                                            maxLength="6"
-                                        />
-                                    </div>
-                                </div>
-                            )}
-
-                            {selectedAuthMethod === 'phone' && (
-                                <div className="phone-section">
-                                    <h3>Phone Number</h3>
-                                    <div className="form-group">
-                                        <label>Phone Number</label>
-                                        <div className="input-with-button">
-                                            <input 
-                                                type="tel" 
-                                                className="form-input" 
-                                                placeholder="+37548076488"
-                                                value={phoneNumber}
-                                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                            />
-                                            <button 
-                                                type="button" 
-                                                className="send-code-btn"
-                                                onClick={handleSendCode}
-                                            >
-                                                Send Code
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Code</label>
-                                        <input 
-                                            type="text" 
-                                            className="form-input code-input" 
-                                            placeholder="Code"
-                                            value={verificationCode}
-                                            onChange={(e) => setVerificationCode(e.target.value)}
-                                            maxLength="6"
-                                        />
-                                    </div>
-                                </div>
-                            )}
-
-                            {selectedAuthMethod === 'email' && (
-                                <div className="email-section">
-                                    <h3>Email</h3>
-                                    <div className="form-group">
-                                        <label>Email Address</label>
-                                        <div className="input-with-button">
-                                            <input 
-                                                type="email" 
-                                                className="form-input" 
-                                                placeholder="Test@gmail.com"
-                                                value={emailAddress}
-                                                onChange={(e) => setEmailAddress(e.target.value)}
-                                            />
-                                            <button 
-                                                type="button" 
-                                                className="send-code-btn"
-                                                onClick={handleSendCode}
-                                            >
-                                                Send Code
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Code</label>
-                                        <input 
-                                            type="text" 
-                                            className="form-input code-input" 
-                                            placeholder="Code"
-                                            value={verificationCode}
-                                            onChange={(e) => setVerificationCode(e.target.value)}
-                                            maxLength="6"
-                                        />
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                        <div className="modal-footer">
-                            <button className="btn-save" onClick={handleSubmit2FA}>Add</button>
-                            <button className="btn-cancel" onClick={closeModals}>Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Notification Preferences Modal */}
-            {showNotificationModal && (
-                <div className="modal-overlay" onClick={closeModals}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2>Notification Preferences</h2>
-                        </div>
-                        <div className="modal-body">
-                            <div className="notification-options">
-                                <div className="notification-item">
-                                    <div className="notification-info">
-                                        <h4>Transaction Alerts</h4>
-                                        <p>Get notified when money is sent or received</p>
-                                    </div>
-                                    <label className="toggle-switch">
-                                        <input type="checkbox" defaultChecked />
-                                        <span className="slider"></span>
-                                    </label>
-                                </div>
-                                <div className="notification-item">
-                                    <div className="notification-info">
-                                        <h4>Security Alerts</h4>
-                                        <p>Important security notifications about your account</p>
-                                    </div>
-                                    <label className="toggle-switch">
-                                        <input type="checkbox" defaultChecked />
-                                        <span className="slider"></span>
-                                    </label>
-                                </div>
-                                <div className="notification-item">
-                                    <div className="notification-info">
-                                        <h4>Marketing Emails</h4>
-                                        <p>Promotional offers and product updates</p>
-                                    </div>
-                                    <label className="toggle-switch">
-                                        <input type="checkbox" />
-                                        <span className="slider"></span>
-                                    </label>
-                                </div>
-                                <div className="notification-item">
-                                    <div className="notification-info">
-                                        <h4>Monthly Statements</h4>
-                                        <p>Receive monthly account statements via email</p>
-                                    </div>
-                                    <label className="toggle-switch">
-                                        <input type="checkbox" defaultChecked />
-                                        <span className="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="modal-footer">
-                            <button className="btn-save">Save Preferences</button>
-                            <button className="btn-cancel" onClick={closeModals}>Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
+        );
+    }
 }

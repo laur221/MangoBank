@@ -2,8 +2,28 @@
 import Link from 'next/link';
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
+import { useEffect, useState } from 'react';
 
 export default function Dashboard() {
+    const [user, setUser] = useState({ fullName: '', email: '' });
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const response = await fetch('http://localhost:3001/Auth/profile', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+                const data = await response.json();
+                setUser(data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
+        fetchUser();
+    }, []);
+
     return (
         <div>
             <div className="dashboard-container">
@@ -15,8 +35,8 @@ export default function Dashboard() {
                         <div className="user-avatar">
                             <i className="fas fa-user-circle"></i>
                         </div>
-                        <h3 className="user-name" id="sidebar-user-name">Admin</h3>
-                        <p className="user-email" id="sidebar-user-email">admin@MangoBank.me</p>
+                        <h3 className="user-name" id="sidebar-user-name">{user.fullName}</h3>
+                        <p className="user-email" id="sidebar-user-email">{user.email}</p>
                     </div>
                     <nav className="sidebar-nav">
                         <ul>

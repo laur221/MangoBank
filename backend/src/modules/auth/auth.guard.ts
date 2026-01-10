@@ -1,17 +1,20 @@
-import { AuthGuard } from '@nestjs/passport';
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private readonly jwtService: JwtService) {
-    super();
-  }
+export class AuthGuard implements CanActivate {
+  constructor(private jwtService: JwtService) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    const token = request.headers['authorization']?.split(' ')[1];
+    const authHeader = request.headers.authorization;
 
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.error('Authorization header is missing or invalid');
+      throw new UnauthorizedException('Authorization header is missing or invalid');
+    }
+
+    const token = authHeader.split(' ')[1];
     try {
       const user = this.jwtService.verify(token);
       if (!user.id) {

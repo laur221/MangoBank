@@ -1,9 +1,10 @@
 'use client';
 import Link from 'next/link';
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Profile() {
+    const [user, setUser] = useState({ fullName: '', email: '' });
     const [userData, setUserData] = useState({
         fullName: '',
         email: '',
@@ -36,7 +37,20 @@ export default function Profile() {
     const [originalData, setOriginalData] = useState({});
 
     useEffect(() => {
-        fetchUserProfile();
+        async function fetchUser() {
+            try {
+                const response = await fetch('http://localhost:3001/Auth/profile', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+                const data = await response.json();
+                setUser(data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
+        fetchUser();
     }, []);
 
     const fetchUserProfile = async () => {
@@ -249,6 +263,9 @@ export default function Profile() {
 
     return (
         <div>
+            <h1>Profile</h1>
+            <p>Name: {user.fullName}</p>
+            <p>Email: {user.email}</p>
             <div className="dashboard-container">
                 <aside className="sidebar">
                     <div className="logo">

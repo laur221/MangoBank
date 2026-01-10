@@ -1,12 +1,29 @@
 'use client';
 import Link from 'next/link';
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-
+import { useEffect, useState } from 'react';
 
 export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [transactions, setTransactions] = useState([]);
+    const [user, setUser] = useState({ fullName: '', email: '' });
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const response = await fetch('http://localhost:3001/Auth/profile', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+                const data = await response.json();
+                setUser(data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
+        fetchUser();
+    }, []);
 
     useEffect(() => {
         setTimeout(() => {

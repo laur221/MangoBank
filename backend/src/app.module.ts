@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Users } from './modules/users/entities/user.entity';
+import { Account } from './modules/accounts/entities/account.entity';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
@@ -13,6 +14,9 @@ import { SettingsModule } from './modules/settings/settings.module';
 import { ProfilesModule } from './modules/profiles/profiles.module';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { CardsModule } from './modules/cards/cards.module';
+import { Setting } from './modules/settings/entities/setting.entity';
+import { Card } from './modules/cards/entities/card.entity';
+import { Transactions } from './modules/transactions/entities/transactions.entity';
 
 // Încarcă fișierul .env din directorul backend
 dotenv.config({ path: join(__dirname, '../.env') });
@@ -26,7 +30,7 @@ dotenv.config({ path: join(__dirname, '../.env') });
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [Users],
+      entities: [Users, Transactions, Setting, Account, Card ],
       synchronize: true,
     }),
     AuthModule,

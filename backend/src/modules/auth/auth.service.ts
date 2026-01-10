@@ -72,7 +72,7 @@ export class AuthService {
       id: user.id,
       email: user.email,
       fullName: user.fullName,
-      createdAt: user.createdAt,
+      createdAt: user.created_at,
     };
   }
 

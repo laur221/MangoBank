@@ -1,22 +1,25 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('users')
 export class Users {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', length: 100, unique: true, nullable: false })
   email: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 128, nullable: false })
   password: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 50, nullable: true })
   fullName: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
+
+  @Column({ type: 'numeric', precision: 15, scale: 2, default: 0.00 })
+  balance: number;
 }
