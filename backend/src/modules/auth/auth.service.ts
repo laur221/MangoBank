@@ -5,12 +5,15 @@ import { JwtService } from '@nestjs/jwt';
 import { Users } from '../users/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { Account } from '../accounts/entities/account.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
+    @InjectRepository(Account)
+    private accountsRepository: Repository<Account>,
     private jwtService: JwtService,
   ) {}
 
@@ -26,12 +29,33 @@ export class AuthService {
     const user = this.usersRepository.create(registerDto);
     await this.usersRepository.save(user);
 
+    // Create a default account for the newly registered user
+    const accountNumber = `ACC${Date.now()}${Math.floor(Math.random() * 9000) + 1000}`; // simple unique-ish account number
+
+    const account = this.accountsRepository.create({
+      user: user,
+      account_number: accountNumber,
+      currency: registerDto['currency'] ?? 'EUR',
+      balance: 0.0,
+      status: 'active',
+      created_by: user,
+      updated_by: user,
+    });
+
+    await this.accountsRepository.save(account);
+
     return {
       message: 'User registered successfully',
       user: {
         id: user.id,
         email: user.email,
         fullName: user.fullName,
+      },
+      account: {
+        id: account.id,
+        account_number: account.account_number,
+        currency: account.currency,
+        balance: account.balance,
       },
     };
   }

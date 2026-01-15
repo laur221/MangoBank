@@ -17,6 +17,7 @@ import { CardsModule } from './modules/cards/cards.module';
 import { Setting } from './modules/settings/entities/setting.entity';
 import { Card } from './modules/cards/entities/card.entity';
 import { Transactions } from './modules/transactions/entities/transactions.entity';
+import { Profile } from './modules/profiles/entities/profile.entity';
 
 // Încarcă fișierul .env din directorul backend
 dotenv.config({ path: join(__dirname, '../.env') });
@@ -30,7 +31,7 @@ dotenv.config({ path: join(__dirname, '../.env') });
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [Users, Transactions, Setting, Account, Card ],
+      entities: [Users, Transactions, Setting, Account, Card, Profile],
       synchronize: true,
     }),
     AuthModule,

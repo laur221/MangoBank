@@ -20,6 +20,4 @@ export class Users {
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
 
-  @Column({ type: 'numeric', precision: 15, scale: 2, default: 0.00 })
-  balance: number;
 }
