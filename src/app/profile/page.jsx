@@ -263,9 +263,6 @@ export default function Profile() {
 
     return (
         <div>
-            <h1>Profile</h1>
-            <p>Name: {user.fullName}</p>
-            <p>Email: {user.email}</p>
             <div className="dashboard-container">
                 <aside className="sidebar">
                     <div className="logo">
@@ -275,8 +272,8 @@ export default function Profile() {
                         <div className="user-avatar">
                             <i className="fas fa-user-circle"></i>
                         </div>
-                        <h3 className="user-name" id="sidebar-user-name">Admin</h3>
-                        <p className="user-email" id="sidebar-user-email">admin@MangoBank.me</p>
+                        <h3 className="user-name" id="sidebar-user-name">{user.fullName}</h3>
+                        <p className="user-email" id="sidebar-user-email">{user.email}</p>
                     </div>
                     <nav className="sidebar-nav">
                         <ul>

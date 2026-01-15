@@ -129,7 +129,7 @@ body {
 
 /* Dashboard Header */
 .dashboard-header {
-    padding: 1rem 2rem;
+    padding: 1rem 2rem 0 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -164,7 +164,7 @@ body {
 
 /* Profile Content */
 .profile-content {
-    padding: 2rem;
+    padding: 0 2rem;
     max-width: 800px;
 }
 
@@ -173,7 +173,7 @@ body {
 }
 
 .profile-header h1 {
-    font-size: 2rem;
+    font-size: 0 2rem;
     color: #333;
     margin-bottom: 0.5rem;
 }

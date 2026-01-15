@@ -13,6 +13,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    return { userId: payload.sub, email: payload.email , fullName: payload.fullName};
+    // Accept tokens signed with either `id` or `sub` to be tolerant
+    const id = payload.id ?? payload.sub;
+    return { id, email: payload.email, fullName: payload.fullName };
   }
 }
