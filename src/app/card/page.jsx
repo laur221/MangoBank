@@ -15,6 +15,8 @@ export default function Card() {
     const [isAnimating, setIsAnimating] = React.useState(false);
     const [isAddingCard, setIsAddingCard] = React.useState(false);
     const [isRequestingCard, setIsRequestingCard] = React.useState(false);
+    const [cards, setCards] = useState([]);
+    const [loadingCards, setLoadingCards] = useState(true);
     const [user, setUser] = useState({ fullName: '', email: '' });
 
     useEffect(() => {
@@ -32,6 +34,30 @@ export default function Card() {
             }
         }
         fetchUser();
+    }, []);
+
+    useEffect(() => {
+        async function fetchCards() {
+            setLoadingCards(true);
+            try {
+                const res = await fetch('http://localhost:3001/cards', {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setCards(Array.isArray(data) ? data : []);
+                } else {
+                    console.warn('Failed to fetch cards', res.status);
+                    setCards([]);
+                }
+            } catch (err) {
+                console.warn('Error fetching cards', err);
+                setCards([]);
+            } finally {
+                setLoadingCards(false);
+            }
+        }
+        fetchCards();
     }, []);
 
     const toggleDetails = () => {
@@ -71,15 +97,36 @@ export default function Card() {
 
     const handleAddCard = async () => {
         if (isAddingCard) return;
-        
+
         setIsAddingCard(true);
-        
-        setTimeout(() => {
+        try {
+            const payload = {
+                card_number: cardNumber.replace(/\s/g, ''),
+                expiry_date: expiryDate,
+                status: 'active',
+            };
+            const res = await fetch('http://localhost:3001/cards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify(payload),
+            });
+            if (res.ok) {
+                const created = await res.json();
+                setCards((c) => [created, ...c]);
+                setShowModal(false);
+                setCardNumber('');
+                setExpiryDate('');
+            } else {
+                console.warn('Failed to add card', res.status);
+            }
+        } catch (err) {
+            console.error('Error adding card', err);
+        } finally {
             setIsAddingCard(false);
-            setShowModal(false);
-            setCardNumber('');
-            setExpiryDate('');
-        }, 2000);
+        }
     };
 
     const handleRequestCard = async () => {
@@ -206,39 +253,46 @@ export default function Card() {
                             </button>
                         </div>
 
-                        <div className="card-container">
-                            <div className="credit-card visa-card">
-                                <div className="card-content">
-                                    <div className="card-header">
-                                        <div className="bank-name">MangoBank</div>
-                                        <div className="visa-logo">VISA</div>
-                                    </div>
-                                    <div className="card-number number-reveal">
-                                        {animatedNumber}
-                                    </div>
-                                    <div className="card-usage">Card Usage: Admin</div>
-                                    <div className="card-details-row">
-                                        <div className="card-expiry">Expired: 07/28</div>
-                                        {showDetails && <div className="card-cvv">CVV: 584</div>}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="card-actions">
-                                <button 
-                                    className={`btn-action view-details ${isAnimating ? 'disabled' : ''}`} 
-                                    onClick={toggleDetails}
-                                    disabled={isAnimating}
-                                >
-                                    {isAnimating ? 'Loading...' : (showDetails ? 'Hide Details' : 'View Details')}
-                                </button>
-                                <button 
-                                    className={`btn-action request-card ${isRequestingCard ? 'disabled' : ''}`} 
-                                    onClick={openRequestModal}
-                                    disabled={isRequestingCard}
-                                >
-                                    Request New Card
-                                </button>
-                            </div>
+                        <div className="card-list">
+                            {loadingCards ? (
+                                <div className="loading">Loading cards...</div>
+                            ) : cards.length === 0 ? (
+                                <div className="empty-cards">You have no cards. Add one to get started.</div>
+                            ) : (
+                                cards.map((card) => {
+                                    const num = card.card_number || '';
+                                    const last4 = num.slice(-4) || '0000';
+                                    const masked = `**** **** **** ${last4}`;
+                                    return (
+                                        <div className="card-container" key={card.id}>
+                                            <div className="credit-card visa-card">
+                                                <div className="card-content">
+                                                    <div className="card-header">
+                                                        <div className="bank-name">MangoBank</div>
+                                                        <div className="visa-logo">VISA</div>
+                                                    </div>
+                                                    <div className="card-number number-reveal">
+                                                        {masked}
+                                                    </div>
+                                                    <div className="card-usage">Card Usage: {card.status ?? 'User'}</div>
+                                                    <div className="card-details-row">
+                                                        <div className="card-expiry">Expiry: {card.expiry_date ?? '--/--'}</div>
+                                                        {showDetails && <div className="card-cvv">CVV: •••</div>}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="card-actions">
+                                                <button className={`btn-action view-details ${isAnimating ? 'disabled' : ''}`} onClick={toggleDetails} disabled={isAnimating}>
+                                                    {isAnimating ? 'Loading...' : (showDetails ? 'Hide Details' : 'View Details')}
+                                                </button>
+                                                <button className={`btn-action request-card ${isRequestingCard ? 'disabled' : ''}`} onClick={openRequestModal} disabled={isRequestingCard}>
+                                                    Request New Card
+                                                </button>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            )}
                         </div>
                     </section>
                 </main>

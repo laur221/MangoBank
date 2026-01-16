@@ -6,6 +6,10 @@ import { useEffect, useState } from 'react';
 
 export default function Dashboard() {
     const [user, setUser] = useState({ fullName: '', email: '' });
+    const [balance, setBalance] = useState(0);
+    const [income, setIncome] = useState(0);
+    const [expenses, setExpenses] = useState(0);
+    const [transactions, setTransactions] = useState([]);
 
     useEffect(() => {
         async function fetchUser() {
@@ -22,6 +26,46 @@ export default function Dashboard() {
             }
         }
         fetchUser();
+    }, []);
+
+    useEffect(() => {
+        async function fetchFinancials() {
+            try {
+                // Fetch accounts and compute balance
+                const accountsRes = await fetch('http://localhost:3001/accounts', {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                });
+                if (accountsRes.ok) {
+                    const accountsData = await accountsRes.json();
+                    // assume accountsData is an array of accounts with `balance`
+                    const total = Array.isArray(accountsData)
+                        ? accountsData.reduce((s, a) => s + (Number(a.balance) || 0), 0)
+                        : 0;
+                    setBalance(total);
+                }
+
+                // Fetch transactions to compute income/expenses
+                const txRes = await fetch('http://localhost:3001/transactions', {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                });
+                if (txRes.ok) {
+                    const txData = await txRes.json();
+                    const now = new Date();
+                    const thisMonth = txData.filter((t) => {
+                        const d = new Date(t.date);
+                        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+                    });
+                    const inc = thisMonth.reduce((s, t) => s + (t.amount > 0 ? Number(t.amount) : 0), 0);
+                    const exp = thisMonth.reduce((s, t) => s + (t.amount < 0 ? Math.abs(Number(t.amount)) : 0), 0);
+                    setIncome(inc);
+                    setExpenses(exp);
+                    setTransactions(txData);
+                }
+            } catch (error) {
+                console.warn('Could not fetch financials, using defaults', error);
+            }
+        }
+        fetchFinancials();
     }, []);
 
     return (
@@ -81,7 +125,7 @@ export default function Dashboard() {
                                 </div>
                                 <div className="card-content">
                                     <h3>Current Balance</h3>
-                                    <p className="amount" id="current-balance">$0.00</p>
+                                    <p className="amount" id="current-balance">${balance.toFixed(2)}</p>
                                     <span className="card-subtitle">Available</span>
                                 </div>
                             </div>
@@ -91,7 +135,7 @@ export default function Dashboard() {
                                 </div>
                                 <div className="card-content">
                                     <h3>Income</h3>
-                                    <p className="amount" id="income-amount">$0.00</p>
+                                    <p className="amount" id="income-amount">${income.toFixed(2)}</p>
                                     <span className="card-subtitle">This Month</span>
                                 </div>
                             </div>
@@ -101,7 +145,7 @@ export default function Dashboard() {
                                 </div>
                                 <div className="card-content">
                                     <h3>Expenses</h3>
-                                    <p className="amount" id="expense-amount">$0.00</p>
+                                    <p className="amount" id="expense-amount">${expenses.toFixed(2)}</p>
                                     <span className="card-subtitle">This Month</span>
                                 </div>
                             </div>

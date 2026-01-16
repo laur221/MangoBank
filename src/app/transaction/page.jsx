@@ -26,61 +26,26 @@ export default function Dashboard() {
     }, []);
 
     useEffect(() => {
-        setTimeout(() => {
-            setTransactions([
-                {
-                    id: 1,
-                    type: 'Received',
-                    recipient: 'John Smith',
-                    date: '2025-06-04',
-                    amount: 1250.00,
-                    status: 'Completed',
-                    icon: 'fas fa-arrow-down',
-                    color: 'green'
-                },
-                {
-                    id: 2,
-                    type: 'Sent',
-                    recipient: 'Netflix Subscription',
-                    date: '2025-06-03',
-                    amount: -15.99,
-                    status: 'Completed',
-                    icon: 'fas fa-arrow-up',
-                    color: 'red'
-                },
-                {
-                    id: 3,
-                    type: 'Received',
-                    recipient: 'Salary Payment',
-                    date: '2025-06-01',
-                    amount: 3500.00,
-                    status: 'Completed',
-                    icon: 'fas fa-arrow-down',
-                    color: 'green'
-                },
-                {
-                    id: 4,
-                    type: 'Sent',
-                    recipient: 'Electric Bill',
-                    date: '2025-05-30',
-                    amount: -89.50,
-                    status: 'Pending',
-                    icon: 'fas fa-arrow-up',
-                    color: 'orange'
-                },
-                {
-                    id: 5,
-                    type: 'Sent',
-                    recipient: 'Maria Garcia',
-                    date: '2025-05-28',
-                    amount: -200.00,
-                    status: 'Completed',
-                    icon: 'fas fa-arrow-up',
-                    color: 'red'
+        async function loadTransactions() {
+            try {
+                const res = await fetch('http://localhost:3001/transactions', {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    // Expect data to be array of transactions with amount/date/etc.
+                    setTransactions(Array.isArray(data) ? data : []);
+                } else {
+                    console.warn('Transactions endpoint returned non-OK status', res.status);
                 }
-            ]);
-            setLoading(false);
-        }, 3000);
+            } catch (err) {
+                console.warn('Failed to fetch transactions, using fallback', err);
+                setTransactions([]);
+            } finally {
+                setLoading(false);
+            }
+        }
+        loadTransactions();
     }, []);
 
     return (

@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Backend: Start Nest (start:debug)",
+      "cwd": "${workspaceFolder}/backend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:debug"],
+      "autoAttachChildProcesses": true,
+      "console": "integratedTerminal",
+      "protocol": "inspector",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "attach",
+      "name": "Backend: Attach to Process (inspect)",
+      "port": 9229,
+      "address": "localhost",
+      "localRoot": "${workspaceFolder}/backend",
+      "remoteRoot": null,
+      "protocol": "inspector",
+      "restart": false
+    }
+  ]
+}
