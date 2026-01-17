@@ -1,28 +1,19 @@
 import { AuthGuard } from '@nestjs/passport';
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private readonly jwtService: JwtService) {
-    super();
+  // Delegate JWT validation to passport-jwt strategy
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    // run default passport authentication (will populate request.user)
+    const result = (await super.canActivate(context)) as boolean;
+    return result;
   }
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const token = request.headers['authorization']?.split(' ')[1];
-
-    try {
-      const user = this.jwtService.verify(token);
-      if (!user.id) {
-        console.error('Token does not contain user ID');
-        throw new UnauthorizedException('Token does not contain user ID');
-      }
-      request.user = user;
-      return true;
-    } catch (error) {
-      console.error('JWT verification failed:', error.message);
-      throw new UnauthorizedException('Invalid token');
+  handleRequest(err: any, user: any, info: any) {
+    if (err || !user) {
+      throw err || new UnauthorizedException('Invalid token');
     }
+    return user;
   }
 }

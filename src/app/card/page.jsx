@@ -15,8 +15,9 @@ export default function Card() {
     const [nameOnCard, setNameOnCard] = React.useState('');
     const [formErrors, setFormErrors] = React.useState({});
     const [requestReason, setRequestReason] = React.useState('');
-    const [animatedNumber, setAnimatedNumber] = React.useState('**** **** **** 2800');
-    const [isAnimating, setIsAnimating] = React.useState(false);
+    const [animatedNumber, setAnimatedNumber] = React.useState('**** **** **** ****');
+    const [animatingCardId, setAnimatingCardId] = React.useState(null);
+    const [revealedCardId, setRevealedCardId] = React.useState(null);
     const [isAddingCard, setIsAddingCard] = React.useState(false);
     const [isRequestingCard, setIsRequestingCard] = React.useState(false);
     const [cards, setCards] = useState([]);
@@ -64,28 +65,41 @@ export default function Card() {
         fetchCards();
     }, []);
 
-    const toggleDetails = () => {
-        if (isAnimating) return;
-        
-        if (!showDetails) {
-            setIsAnimating(true);
-            setShowDetails(true);
-            animateNumberReveal();
-            setTimeout(() => setIsAnimating(false), 1500);
-        } else {
-            setShowDetails(false);
-            setAnimatedNumber('**** **** **** 2800');
+    const toggleDetails = (card) => {
+        // If already animating this card, ignore
+        if (animatingCardId === card.id) return;
+
+        if (revealedCardId === card.id) {
+            // hide
+            setRevealedCardId(null);
+  
+            return;
         }
+
+        // start animate reveal for this card
+        setAnimatingCardId(card.id);
+        animateNumberReveal(card.card_number, (step) => setAnimatedNumber(step), () => {
+            setAnimatingCardId(null);
+            setRevealedCardId(card.id);
+        });
     };
 
     const openModal = () => {
         if (isAddingCard) return;
+        setFormErrors({});
         setShowModal(true);
     };
 
     const closeModal = () => {
         if (isAddingCard) return;
         setShowModal(false);
+        // reset form when modal is closed
+        setCardNumber('');
+        setExpiryDate('');
+        setCardType('');
+        setCvv('');
+        setNameOnCard('');
+        setFormErrors({});
     };
 
     const openRequestModal = () => {
@@ -101,18 +115,22 @@ export default function Card() {
 
     const handleAddCard = async () => {
         if (isAddingCard) return;
-        // validate before sending
-        const errors = {};
-        if (!cardType) errors.cardType = 'Card type is required';
+        // sequential validation: show only the first missing/invalid field message
         const digits = cardNumber.replace(/\s/g, '');
-        if (!digits || digits.length !== 16) errors.cardNumber = 'Card number must be 16 digits';
-        if (!expiryDate || !/^(0[1-9]|1[0-2])\/[0-9]{2}$/.test(expiryDate)) errors.expiryDate = 'Expiry must be in MM/YY format';
-        if (!cvv || cvv.length !== 3) errors.cvv = 'CVV must be 3 digits';
-        if (!nameOnCard || nameOnCard.trim().length === 0) errors.nameOnCard = 'Username is required';
+        const checks = [
+            ['cardType', () => !!cardType, 'Please select the card type first'],
+            ['cardNumber', () => !!digits && digits.length === 16, 'Card number must be 16 digits'],
+            ['expiryDate', () => !!expiryDate && /^(0[1-9]|1[0-2])\/[0-9]{2}$/.test(expiryDate), 'Expiry must be in MM/YY format'],
+            ['cvv', () => !!cvv && cvv.length === 3, 'CVV must be 3 digits'],
+            ['nameOnCard', () => !!nameOnCard && nameOnCard.trim().length > 0, 'Name on card is required'],
+        ];
 
-        if (Object.keys(errors).length > 0) {
-            setFormErrors(errors);
-            return;
+        for (const [field, predicate, message] of checks) {
+            // @ts-ignore
+            if (!predicate()) {
+                setFormErrors({ [field]: message });
+                return;
+            }
         }
 
         setFormErrors({});
@@ -122,6 +140,9 @@ export default function Card() {
                 card_number: cardNumber.replace(/\s/g, ''),
                 expiry_date: expiryDate,
                 status: 'active',
+                name_on_card: nameOnCard,
+                card_type: cardType,
+                    cvv: cvv,
             };
             const res = await fetch('http://localhost:3001/cards', {
                 method: 'POST',
@@ -135,8 +156,15 @@ export default function Card() {
                 const created = await res.json();
                 setCards((c) => [created, ...c]);
                 setShowModal(false);
+                // reset all form fields after successful add
                 setCardNumber('');
                 setExpiryDate('');
+                setCardType('');
+                setCvv('');
+                setNameOnCard('');
+                setFormErrors({});
+                // reset animated placeholder
+                setAnimatedNumber('**** **** **** ****');
             } else {
                 console.warn('Failed to add card', res.status);
             }
@@ -199,31 +227,33 @@ export default function Card() {
         setExpiryDate(value);
     };
 
-    const animateNumberReveal = () => {
-        const finalNumber = '4532 1234 5678 2800';
-        const steps = [
-            '**** **** **** 2800',
-            '4*** **** **** 2800',
-            '45** **** **** 2800',
-            '453* **** **** 2800',
-            '4532 **** **** 2800',
-            '4532 1*** **** 2800',
-            '4532 12** **** 2800',
-            '4532 123* **** 2800',
-            '4532 1234 **** 2800',
-            '4532 1234 5*** 2800',
-            '4532 1234 56** 2800',
-            '4532 1234 567* 2800',
-            '4532 1234 5678 2800'
-        ];
+    const formatCardNumber = (num) => {
+        if (!num) return '**** **** **** ****';
+        const s = String(num).replace(/\s/g, '').replace(/(.{4})/g, '$1 ').trim();
+        return s;
+    };
 
-        let currentStep = 0;
+    const animateNumberReveal = (fullNumber, onStep, onComplete) => {
+        const clean = String(fullNumber).replace(/\s/g, '');
+        const groups = [];
+        for (let i = 0; i < clean.length; i += 4) groups.push(clean.substring(i, i + 4));
+
+        const steps = [];
+        for (let reveal = 0; reveal <= groups.length; reveal++) {
+            const parts = groups.map((g, idx) => (idx < reveal ? g : '****'));
+            steps.push(parts.join(' '));
+        }
+
+        let i = 0;
         const interval = setInterval(() => {
-            if (currentStep < steps.length) {
-                setAnimatedNumber(steps[currentStep]);
-                currentStep++;
+            if (i < steps.length) {
+                onStep(steps[i]);
+                i++;
             } else {
                 clearInterval(interval);
+                // final ensure full number
+                onStep(formatCardNumber(fullNumber));
+                if (onComplete) onComplete();
             }
         }, 80);
     };
@@ -289,37 +319,40 @@ export default function Card() {
                                 <div className="empty-cards">You have no cards. Add one to get started.</div>
                             ) : (
                                 cards.map((card) => {
-                                    const num = card.card_number || '';
-                                    const last4 = num.slice(-4) || '0000';
-                                    const masked = `**** **** **** ${last4}`;
-                                    return (
-                                        <div className="card-container" key={card.id}>
-                                            <div className="credit-card visa-card">
-                                                <div className="card-content">
-                                                    <div className="card-header">
-                                                        <div className="bank-name">MangoBank</div>
-                                                        <div className="visa-logo">VISA</div>
-                                                    </div>
-                                                    <div className="card-number number-reveal">
-                                                        {masked}
-                                                    </div>
-                                                    <div className="card-usage">Card Usage: {card.status ?? 'User'}</div>
-                                                    <div className="card-details-row">
-                                                        <div className="card-expiry">Expiry: {card.expiry_date ?? '--/--'}</div>
-                                                        {showDetails && <div className="card-cvv">CVV: •••</div>}
+                                        const num = card.card_number || '';
+                                        const last4 = num.slice(-4) || '0000';
+                                        const masked = `**** **** **** ${last4}`;
+                                        const isAnimatingThis = animatingCardId === card.id;
+                                        const isRevealed = revealedCardId === card.id;
+                                        const displayedNumber = isAnimatingThis ? animatedNumber : (isRevealed ? formatCardNumber(num) : masked);
+                                        return (
+                                            <div className="card-container" key={card.id}>
+                                                <div className="credit-card visa-card">
+                                                    <div className="card-content">
+                                                        <div className="card-header">
+                                                            <div className="bank-name">MangoBank</div>
+                                                            <div className="visa-logo">VISA</div>
+                                                        </div>
+                                                        <div className="card-number number-reveal">
+                                                            {displayedNumber}
+                                                        </div>
+                                                        <div className="card-usage">Holder: {card.name_on_card ?? card.user?.fullName ?? 'User'}</div>
+                                                        <div className="card-details-row">
+                                                            <div className="card-expiry">Expiry: {card.expiry_date ?? '--/--'}</div>
+                                                            {isRevealed ? <div className="card-cvv">CVV: {card.cvv_hash ?? card.cvv ?? '•••'}</div> : null}
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <div className="card-actions">
+                                                    <button className={`btn-action view-details ${isAnimatingThis ? 'disabled' : ''}`} onClick={() => toggleDetails(card)} disabled={isAnimatingThis}>
+                                                        {isAnimatingThis ? 'Loading...' : (isRevealed ? 'Hide Details' : 'View Details')}
+                                                    </button>
+                                                    <button className={`btn-action request-card ${isRequestingCard ? 'disabled' : ''}`} onClick={openRequestModal} disabled={isRequestingCard}>
+                                                        Request New Card
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div className="card-actions">
-                                                <button className={`btn-action view-details ${isAnimating ? 'disabled' : ''}`} onClick={toggleDetails} disabled={isAnimating}>
-                                                    {isAnimating ? 'Loading...' : (showDetails ? 'Hide Details' : 'View Details')}
-                                                </button>
-                                                <button className={`btn-action request-card ${isRequestingCard ? 'disabled' : ''}`} onClick={openRequestModal} disabled={isRequestingCard}>
-                                                    Request New Card
-                                                </button>
-                                            </div>
-                                        </div>
-                                    );
+                                        );
                                 })
                             )}
                         </div>
@@ -336,12 +369,12 @@ export default function Card() {
                         <div className="modal-body">
                             <div className="form-group">
                                 <label>Card Type</label>
-                                <select className="form-select" value={cardType} onChange={(e) => setCardType(e.target.value)} required>
+                                <select className="form-select" value={cardType} onChange={(e) => { setCardType(e.target.value); setFormErrors(prev => ({ ...prev, cardType: undefined })); }} required>
                                     <option value="" disabled>Select Card Type</option>
                                     <option value="debit">Debit Card</option>
                                     <option value="credit">Credit Card</option>
                                 </select>
-                                {formErrors.cardType && <div className="field-error">{formErrors.cardType}</div>}
+                                {formErrors.cardType && <div className="field-error" style={{ color: 'red' }}>{formErrors.cardType}</div>}
                             </div>
                             
                             <div className="form-group">
@@ -359,10 +392,16 @@ export default function Card() {
                                         }
                                     }}
                                         required
-                                        disabled={!cardType || isAddingCard}
+                                        readOnly={!cardType || isAddingCard}
+                                        onFocus={() => {
+                                            if (!cardType) {
+                                                setFormErrors(prev => ({ ...prev, cardType: 'Please select card type first' }));
+                                                const el = document.querySelector('.form-select');
+                                                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            }
+                                        }}
                                 />
-                                {formErrors.cardNumber && <div className="field-error">{formErrors.cardNumber}</div>}
-                                {!cardType && !formErrors.cardNumber && <div className="field-note">Select card type to enable this field</div>}
+                                {formErrors.cardNumber && <div className="field-error" style={{ color: 'red' }}>{formErrors.cardNumber}</div>}
                             </div>
 
                             <div className="form-row">
@@ -381,10 +420,16 @@ export default function Card() {
                                         }}
                                         maxLength="5"
                                         required
-                                        disabled={!cardType || isAddingCard}
+                                        readOnly={!cardType || isAddingCard}
+                                        onFocus={() => {
+                                            if (!cardType) {
+                                                setFormErrors(prev => ({ ...prev, cardType: 'Please select card type first' }));
+                                                const el = document.querySelector('.form-select');
+                                                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            }
+                                        }}
                                     />
-                                {formErrors.expiryDate && <div className="field-error">{formErrors.expiryDate}</div>}
-                                {!cardType && !formErrors.expiryDate && <div className="field-note">Select card type to enable this field</div>}
+                                {formErrors.expiryDate && <div className="field-error" style={{ color: 'red' }}>{formErrors.expiryDate}</div>}
                                 </div>
                                 <div className="form-group">
                                     <label>CVV</label>
@@ -396,10 +441,16 @@ export default function Card() {
                                         value={cvv}
                                         onChange={(e) => setCvv(e.target.value.replace(/\D/g, '').substring(0,3))}
                                         required
-                                        disabled={!cardType || isAddingCard}
+                                        readOnly={!cardType || isAddingCard}
+                                        onFocus={() => {
+                                            if (!cardType) {
+                                                setFormErrors(prev => ({ ...prev, cardType: 'Please select card type first' }));
+                                                const el = document.querySelector('.form-select');
+                                                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            }
+                                        }}
                                     />
-                                {formErrors.cvv && <div className="field-error">{formErrors.cvv}</div>}
-                                {!cardType && !formErrors.cvv && <div className="field-note">Select card type to enable this field</div>}
+                                {formErrors.cvv && <div className="field-error" style={{ color: 'red' }}>{formErrors.cvv}</div>}
                                 </div>
                             </div>
 
@@ -412,10 +463,16 @@ export default function Card() {
                                     value={nameOnCard}
                                     onChange={(e) => setNameOnCard(e.target.value)}
                                     required
-                                    disabled={!cardType || isAddingCard}
+                                    readOnly={!cardType || isAddingCard}
+                                    onFocus={() => {
+                                        if (!cardType) {
+                                            setFormErrors(prev => ({ ...prev, cardType: 'Please select card type first' }));
+                                            const el = document.querySelector('.form-select');
+                                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                        }
+                                    }}
                                 />
-                                {formErrors.nameOnCard && <div className="field-error">{formErrors.nameOnCard}</div>}
-                                {!cardType && !formErrors.nameOnCard && <div className="field-note">Select card type to enable this field</div>}
+                                {formErrors.nameOnCard && <div className="field-error" style={{ color: 'red' }}>{formErrors.nameOnCard}</div>}
                             </div>
                         </div>
                         <div className="modal-footer">

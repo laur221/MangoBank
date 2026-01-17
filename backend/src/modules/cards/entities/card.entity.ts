@@ -18,6 +18,9 @@ export class Card {
   @Column({ type: 'varchar', length: 16, unique: true, nullable: false })
   card_number: string;
 
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  name_on_card: string;
+
   // Stored as string in MM/YY or YYYY-MM-DD formats coming from client
   @Column({ type: 'varchar', length: 20, nullable: true })
   expiry_date: string;
@@ -33,4 +36,6 @@ export class Card {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
+
+  
 }
