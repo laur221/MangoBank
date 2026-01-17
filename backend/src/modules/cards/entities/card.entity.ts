@@ -18,8 +18,9 @@ export class Card {
   @Column({ type: 'varchar', length: 16, unique: true, nullable: false })
   card_number: string;
 
-  @Column({ type: 'date', nullable: true })
-  expiry_date: Date;
+  // Stored as string in MM/YY or YYYY-MM-DD formats coming from client
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  expiry_date: string;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   cvv_hash: string;

@@ -8,6 +8,7 @@ import { LoginDto } from './dto/login.dto';
 import { Account } from '../accounts/entities/account.entity';
 import { Profile } from '../profiles/entities/profile.entity';
 import { Setting } from '../settings/entities/setting.entity';
+import { Card } from '../cards/entities/card.entity';
 
 @Injectable()
 export class AuthService {

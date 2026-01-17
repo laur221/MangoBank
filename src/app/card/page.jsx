@@ -10,6 +10,10 @@ export default function Card() {
     const [showRequestModal, setShowRequestModal] = React.useState(false);
     const [cardNumber, setCardNumber] = React.useState('');
     const [expiryDate, setExpiryDate] = React.useState('');
+    const [cardType, setCardType] = React.useState('');
+    const [cvv, setCvv] = React.useState('');
+    const [nameOnCard, setNameOnCard] = React.useState('');
+    const [formErrors, setFormErrors] = React.useState({});
     const [requestReason, setRequestReason] = React.useState('');
     const [animatedNumber, setAnimatedNumber] = React.useState('**** **** **** 2800');
     const [isAnimating, setIsAnimating] = React.useState(false);
@@ -97,7 +101,21 @@ export default function Card() {
 
     const handleAddCard = async () => {
         if (isAddingCard) return;
+        // validate before sending
+        const errors = {};
+        if (!cardType) errors.cardType = 'Card type is required';
+        const digits = cardNumber.replace(/\s/g, '');
+        if (!digits || digits.length !== 16) errors.cardNumber = 'Card number must be 16 digits';
+        if (!expiryDate || !/^(0[1-9]|1[0-2])\/[0-9]{2}$/.test(expiryDate)) errors.expiryDate = 'Expiry must be in MM/YY format';
+        if (!cvv || cvv.length !== 3) errors.cvv = 'CVV must be 3 digits';
+        if (!nameOnCard || nameOnCard.trim().length === 0) errors.nameOnCard = 'Username is required';
 
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            return;
+        }
+
+        setFormErrors({});
         setIsAddingCard(true);
         try {
             const payload = {
@@ -127,6 +145,17 @@ export default function Card() {
         } finally {
             setIsAddingCard(false);
         }
+    };
+
+    const isFormValid = () => {
+        const digits = cardNumber.replace(/\s/g, '');
+        return (
+            cardType &&
+            digits && digits.length === 16 &&
+            expiryDate && /^(0[1-9]|1[0-2])\/[0-9]{2}$/.test(expiryDate) &&
+            cvv && cvv.length === 3 &&
+            nameOnCard && nameOnCard.trim().length > 0
+        );
     };
 
     const handleRequestCard = async () => {
@@ -307,11 +336,12 @@ export default function Card() {
                         <div className="modal-body">
                             <div className="form-group">
                                 <label>Card Type</label>
-                                <select className="form-select">
-                                    <option>Select Card Type</option>
-                                    <option>Debit Card</option>
-                                    <option>Credit Card</option>
+                                <select className="form-select" value={cardType} onChange={(e) => setCardType(e.target.value)} required>
+                                    <option value="" disabled>Select Card Type</option>
+                                    <option value="debit">Debit Card</option>
+                                    <option value="credit">Credit Card</option>
                                 </select>
+                                {formErrors.cardType && <div className="field-error">{formErrors.cardType}</div>}
                             </div>
                             
                             <div className="form-group">
@@ -328,7 +358,11 @@ export default function Card() {
                                             e.preventDefault();
                                         }
                                     }}
+                                        required
+                                        disabled={!cardType || isAddingCard}
                                 />
+                                {formErrors.cardNumber && <div className="field-error">{formErrors.cardNumber}</div>}
+                                {!cardType && !formErrors.cardNumber && <div className="field-note">Select card type to enable this field</div>}
                             </div>
 
                             <div className="form-row">
@@ -346,7 +380,11 @@ export default function Card() {
                                             }
                                         }}
                                         maxLength="5"
+                                        required
+                                        disabled={!cardType || isAddingCard}
                                     />
+                                {formErrors.expiryDate && <div className="field-error">{formErrors.expiryDate}</div>}
+                                {!cardType && !formErrors.expiryDate && <div className="field-note">Select card type to enable this field</div>}
                                 </div>
                                 <div className="form-group">
                                     <label>CVV</label>
@@ -355,7 +393,13 @@ export default function Card() {
                                         className="form-input" 
                                         placeholder="XXX"
                                         maxLength="3"
+                                        value={cvv}
+                                        onChange={(e) => setCvv(e.target.value.replace(/\D/g, '').substring(0,3))}
+                                        required
+                                        disabled={!cardType || isAddingCard}
                                     />
+                                {formErrors.cvv && <div className="field-error">{formErrors.cvv}</div>}
+                                {!cardType && !formErrors.cvv && <div className="field-note">Select card type to enable this field</div>}
                                 </div>
                             </div>
 
@@ -365,7 +409,13 @@ export default function Card() {
                                     type="text" 
                                     className="form-input" 
                                     placeholder="Username"
+                                    value={nameOnCard}
+                                    onChange={(e) => setNameOnCard(e.target.value)}
+                                    required
+                                    disabled={!cardType || isAddingCard}
                                 />
+                                {formErrors.nameOnCard && <div className="field-error">{formErrors.nameOnCard}</div>}
+                                {!cardType && !formErrors.nameOnCard && <div className="field-note">Select card type to enable this field</div>}
                             </div>
                         </div>
                         <div className="modal-footer">
@@ -424,7 +474,7 @@ export default function Card() {
                             <button 
                                 className={`btn-add-card ${isRequestingCard ? 'loading' : ''}`}
                                 onClick={handleRequestCard}
-                                disabled={isRequestingCard}
+                                disabled={isRequestingCard || !requestReason}
                             >
                                 {isRequestingCard ? 'Requesting...' : 'Request Virtual Card'}
                             </button>
