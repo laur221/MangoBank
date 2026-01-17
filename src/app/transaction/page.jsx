@@ -9,6 +9,17 @@ export default function Dashboard() {
     const [user, setUser] = useState({ fullName: '', email: '' });
 
     useEffect(() => {
+        function decodeUserFromToken() {
+            try {
+                const t = localStorage.getItem('token');
+                if (!t) return null;
+                const payload = JSON.parse(atob(t.split('.')[1]));
+                return { fullName: payload.fullName ?? '', email: payload.email ?? '' };
+            } catch (e) {
+                return null;
+            }
+        }
+
         async function fetchUser() {
             try {
                 const response = await fetch('http://localhost:3001/Auth/profile', {
@@ -16,13 +27,34 @@ export default function Dashboard() {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
                 });
-                const data = await response.json();
-                setUser(data);
+                if (response.ok) {
+                    const data = await response.json();
+                    setUser(data);
+                } else {
+                    const fallback = decodeUserFromToken();
+                    if (fallback) setUser(fallback);
+                }
             } catch (error) {
                 console.error('Error fetching user data:', error);
+                const fallback = decodeUserFromToken();
+                if (fallback) setUser(fallback);
             }
         }
         fetchUser();
+
+        const onProfileUpdated = () => {
+            try {
+                const s = localStorage.getItem('user');
+                if (s) {
+                    const u = JSON.parse(s);
+                    setUser({ fullName: u.fullName ?? '', email: u.email ?? '' });
+                    return;
+                }
+            } catch (e) {}
+            fetchUser();
+        };
+        window.addEventListener('profileUpdated', onProfileUpdated);
+        return () => window.removeEventListener('profileUpdated', onProfileUpdated);
     }, []);
 
     useEffect(() => {

@@ -37,6 +37,17 @@ export default function Profile() {
     const [originalData, setOriginalData] = useState({});
 
     useEffect(() => {
+        function decodeUserFromToken() {
+            try {
+                const t = localStorage.getItem('token');
+                if (!t) return null;
+                const payload = JSON.parse(atob(t.split('.')[1]));
+                return { fullName: payload.fullName ?? '', email: payload.email ?? '' };
+            } catch (e) {
+                return null;
+            }
+        }
+
         async function fetchUser() {
             try {
                 const response = await fetch('http://localhost:3001/Auth/profile', {
@@ -44,10 +55,27 @@ export default function Profile() {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
                 });
-                const data = await response.json();
-                setUser(data);
+                if (response.ok) {
+                    const data = await response.json();
+                    // data contains user fields and profile
+                    setUser({ fullName: data.fullName ?? '', email: data.email ?? '' });
+                    const profileData = {
+                        fullName: data.fullName ?? '',
+                        email: data.email ?? '',
+                        phoneNumber: data.profile?.phone ?? '',
+                        address: data.profile?.address ?? ''
+                    };
+                    setUserData(profileData);
+                    setOriginalData(profileData);
+                } else {
+                    console.warn('Failed to fetch profile', response.status);
+                    const fallback = decodeUserFromToken();
+                    if (fallback) setUser(fallback);
+                }
             } catch (error) {
                 console.error('Error fetching user data:', error);
+                const fallback = decodeUserFromToken();
+                if (fallback) setUser(fallback);
             }
         }
         fetchUser();
@@ -105,17 +133,44 @@ export default function Profile() {
                     return;
                 }
             }
-            
-            setVerification(prev => ({
-                ...prev,
-                [field === 'phoneNumber' ? 'phone' : field]: {
-                    ...prev[field === 'phoneNumber' ? 'phone' : field],
-                    isVerifying: true,
-                    codeSent: false,
-                    code: '',
-                    isVerified: false
+            // For phone: only start verification flow if a non-empty phone is provided
+            if (field === 'phoneNumber') {
+                if (value && value.length > 0) {
+                    setVerification(prev => ({
+                        ...prev,
+                        phone: {
+                            ...prev.phone,
+                            isVerifying: true,
+                            codeSent: false,
+                            code: '',
+                            isVerified: false
+                        }
+                    }));
+                } else {
+                    // if phone cleared, reset phone verification
+                    setVerification(prev => ({
+                        ...prev,
+                        phone: {
+                            ...prev.phone,
+                            isVerifying: false,
+                            codeSent: false,
+                            code: '',
+                            isVerified: false
+                        }
+                    }));
                 }
-            }));
+            } else {
+                setVerification(prev => ({
+                    ...prev,
+                    [field === 'phoneNumber' ? 'phone' : field]: {
+                        ...prev[field === 'phoneNumber' ? 'phone' : field],
+                        isVerifying: true,
+                        codeSent: false,
+                        code: '',
+                        isVerified: false
+                    }
+                }));
+            }
         } else if ((field === 'email' || field === 'phoneNumber') && value === originalData[field]) {
             setVerification(prev => ({
                 ...prev,
@@ -221,33 +276,80 @@ export default function Profile() {
             return;
         }
 
-        if (phoneChanged && !verification.phone.isVerified) {
+        // Only require phone verification if a phone number is provided
+        if (phoneChanged && userData.phoneNumber && userData.phoneNumber.trim() !== '' && !verification.phone.isVerified) {
             alert('Please verify your phone number before saving.');
             return;
         }
 
         setSaving(true);
         try {
-            // Simulate API call - always succeed
-            setTimeout(() => {
-                setIsEditing(false);
-                setOriginalData(userData);
+            const res = await fetch('http://localhost:3001/Auth/profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify({
+                    fullName: userData.fullName,
+                    email: userData.email,
+                    phone: userData.phoneNumber,
+                    address: userData.address,
+                }),
+            });
+
+            if (res.ok) {
+                // POST succeeded — re-fetch canonical profile from server
+                const profileRes = await fetch('http://localhost:3001/Auth/profile', {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                });
+                if (profileRes.ok) {
+                    const fresh = await profileRes.json();
+                    const newOriginal = {
+                        fullName: fresh.fullName ?? userData.fullName,
+                        email: fresh.email ?? userData.email,
+                        phoneNumber: fresh.profile?.phone ?? userData.phoneNumber,
+                        address: fresh.profile?.address ?? userData.address,
+                    };
+                    setIsEditing(false);
+                    setOriginalData(newOriginal);
+                    setUserData(newOriginal);
+                    // Update top-level user (sidebar) immediately
+                    setUser({ fullName: newOriginal.fullName, email: newOriginal.email });
+                    // persist to localStorage and broadcast update so other pages update without full refresh
+                    try {
+                        localStorage.setItem('user', JSON.stringify({ fullName: newOriginal.fullName, email: newOriginal.email }));
+                        window.dispatchEvent(new Event('profileUpdated'));
+                    } catch (e) {
+                        // ignore storage errors in restricted contexts
+                    }
+                } else {
+                    // fallback to using POST response if re-fetch failed
+                    const updated = await res.json();
+                    const newOriginal = {
+                        fullName: updated.fullName ?? userData.fullName,
+                        email: updated.email ?? userData.email,
+                        phoneNumber: updated.profile?.phone ?? userData.phoneNumber,
+                        address: updated.profile?.address ?? userData.address,
+                    };
+                    setIsEditing(false);
+                    setOriginalData(newOriginal);
+                    setUserData(newOriginal);
+                    setUser({ fullName: newOriginal.fullName, email: newOriginal.email });
+                }
                 setVerification({
                     email: { isVerifying: false, code: '', codeSent: false, sending: false, sentCode: '', isVerified: false },
                     phone: { isVerifying: false, code: '', codeSent: false, sending: false, sentCode: '', isVerified: false }
                 });
                 alert('Profile updated successfully!');
-                setSaving(false);
-            }, 1500);
+            } else {
+                console.warn('Failed to update profile', res.status);
+                alert('Failed to update profile');
+            }
         } catch (error) {
-            // Remove error handling - always show success
-            setIsEditing(false);
-            setOriginalData(userData);
-            setVerification({
-                email: { isVerifying: false, code: '', codeSent: false, sending: false, sentCode: '', isVerified: false },
-                phone: { isVerifying: false, code: '', codeSent: false, sending: false, sentCode: '', isVerified: false }
-            });
-            alert('Profile updated successfully!');
+            console.error('Error updating profile', error);
+            alert('Error updating profile');
+        } finally {
             setSaving(false);
         }
     };

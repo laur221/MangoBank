@@ -101,14 +101,11 @@ export class AuthService {
           language: savedSetting.language,
           theme: savedSetting.theme,
         },
-        // card is not created at registration; user adds cards from the UI
       };
     } catch (error) {
       console.error('Registration transaction failed:', error);
       throw error;
     }
-
-    // Removed unreachable/obsolete return that used out-of-scope variables
   }
 
   async login(loginDto: LoginDto) {
@@ -135,19 +132,63 @@ export class AuthService {
   }
 
   async getProfile(userId: number) {
-    const user = await this.usersRepository.findOne({
-      where: { id: userId },
-    });
+    // fetch user first (Users does not declare inverse relation to Profile)
+    const user = await this.usersRepository.findOneBy({ id: userId });
 
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
+
+    // load profile separately via profilesRepository
+    const profile = await this.profilesRepository.findOne({ where: { user: { id: userId } } as any });
 
     return {
       id: user.id,
       email: user.email,
       fullName: user.fullName,
       createdAt: user.created_at,
+      profile: {
+        id: profile?.id ?? null,
+        phone: profile?.phone ?? null,
+        address: profile?.address ?? null,
+      },
+    };
+  }
+
+  async updateProfile(userId: number, payload: { fullName?: string; email?: string; phone?: string; address?: string; }) {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    if (payload.fullName !== undefined) user.fullName = payload.fullName;
+    if (payload.email !== undefined) user.email = payload.email;
+
+    await this.usersRepository.save(user as any);
+
+    let profile = await this.profilesRepository.findOne({ where: { user: { id: userId } } as any, relations: ['user'] });
+    if (!profile) {
+      const newProfile = new Profile();
+      newProfile.user = user as any;
+      newProfile.phone = payload.phone ?? '';
+      newProfile.address = payload.address ?? '';
+      profile = newProfile;
+    } else {
+      if (payload.phone !== undefined) profile.phone = payload.phone;
+      if (payload.address !== undefined) profile.address = payload.address;
+    }
+
+    const savedProfile = await this.profilesRepository.save(profile as any);
+
+    return {
+      id: user.id,
+      email: user.email,
+      fullName: user.fullName,
+      profile: {
+        id: savedProfile.id,
+        phone: savedProfile.phone,
+        address: savedProfile.address,
+      },
     };
   }
 

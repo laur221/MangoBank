@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -13,8 +14,10 @@ export class AccountsController {
   }
 
   @Get()
-  findAll() {
-    return this.accountsService.findAll();
+  @UseGuards(JwtAuthGuard)
+  findAll(@Request() req) {
+    // return only the authenticated user's accounts
+    return this.accountsService.findByUser(req.user.id);
   }
 
   @Get(':id')

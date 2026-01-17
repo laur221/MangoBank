@@ -21,6 +21,15 @@ export class AccountsService {
     return this.accountRepository.find();
   }
 
+  async findByUser(userId: number) {
+    // Use a query builder to explicitly filter by user_id to avoid ambiguous where shapes
+    return this.accountRepository
+      .createQueryBuilder('account')
+      .leftJoinAndSelect('account.user', 'user')
+      .where('user.id = :userId', { userId })
+      .getMany();
+  }
+
   async findOne(id: number) {
     return this.accountRepository.findOneBy({ id });
   }

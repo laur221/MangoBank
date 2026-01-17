@@ -33,7 +33,23 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Profile retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   getProfile(@Request() req) {
-    return req.user;
+    return this.authService.getProfile(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update current user profile' })
+  @ApiResponse({ status: 200, description: 'Profile updated successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @Post('profile')
+  updateProfile(@Request() req, @Body() body: any) {
+    // Use POST to update since API layer may be simple; accept fullName, email, phone, address
+    return this.authService.updateProfile(req.user.id, {
+      fullName: body.fullName,
+      email: body.email,
+      phone: body.phone,
+      address: body.address,
+    });
   }
 
 

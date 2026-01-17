@@ -16,13 +16,17 @@ export class CardsController {
   }
 
   @Get()
-  findAll() {
-    return this.cardsService.findAll();
+  @UseGuards(JwtAuthGuard)
+  findAll(@Request() req) {
+    const userId = req.user?.id;
+    return this.cardsService.findByUser(userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cardsService.findOne(+id);
+  @UseGuards(JwtAuthGuard)
+  findOne(@Request() req, @Param('id') id: string) {
+    const userId = req.user?.id;
+    return this.cardsService.findOneForUser(+id, userId);
   }
 
   @Patch(':id')

@@ -48,6 +48,25 @@ export class CardsService {
     return this.cardRepository.find({ relations: ['account', 'user'] });
   }
 
+  async findByUser(userId: number) {
+    return this.cardRepository
+      .createQueryBuilder('card')
+      .leftJoinAndSelect('card.user', 'user')
+      .leftJoinAndSelect('card.account', 'account')
+      .where('user.id = :userId', { userId })
+      .getMany();
+  }
+
+  async findOneForUser(id: number, userId: number) {
+    return this.cardRepository
+      .createQueryBuilder('card')
+      .leftJoinAndSelect('card.user', 'user')
+      .leftJoinAndSelect('card.account', 'account')
+      .where('card.id = :id', { id })
+      .andWhere('user.id = :userId', { userId })
+      .getOne();
+  }
+
   async findOne(id: number) {
     return this.cardRepository.findOne({ where: { id }, relations: ['account', 'user'] });
   }
