@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -190,6 +190,27 @@ export class AuthService {
         address: savedProfile.address,
       },
     };
+  }
+
+  async changePassword(userId: number, currentPassword: string, newPassword: string, confirmPassword?: string) {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Passwords are stored in plain text in this project (dev). Verify current password.
+    if (user.password !== currentPassword) {
+      throw new BadRequestException('Current password does not match');
+    }
+
+    if (confirmPassword !== undefined && newPassword !== confirmPassword) {
+      throw new BadRequestException('New password and confirmation do not match');
+    }
+
+    user.password = newPassword;
+    await this.usersRepository.save(user as any);
+
+    return { message: 'Password changed successfully' };
   }
 
 }

@@ -12,6 +12,10 @@ export default function Settings() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [emailAddress, setEmailAddress] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [changePasswordError, setChangePasswordError] = useState('');
 
     useEffect(() => {
         function decodeUserFromToken() {
@@ -63,7 +67,48 @@ export default function Settings() {
     }, []);
 
     const handlePasswordChange = () => {
+        setChangePasswordError('');
         setShowPasswordModal(true);
+    };
+
+    const handleSubmitChangePassword = async () => {
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            setChangePasswordError('Please fill all fields');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            setChangePasswordError('New password and confirmation do not match');
+            return;
+        }
+
+        try {
+            const resp = await fetch('http://localhost:3001/Auth/change-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
+            });
+
+            if (resp.ok) {
+                const data = await resp.json();
+                alert(data.message ?? 'Password changed');
+                setChangePasswordError('');
+                closeModals();
+            } else {
+                const err = await resp.json().catch(() => null);
+                const serverMsg = err && (typeof err.message === 'string' ? err.message : Array.isArray(err.message) ? err.message.join(', ') : null);
+                if (resp.status === 400) {
+                    setChangePasswordError(serverMsg || 'Current password does not match');
+                } else {
+                    setChangePasswordError(serverMsg || 'Error changing password');
+                }
+            }
+        } catch (e) {
+            console.error('Change password failed', e);
+            setChangePasswordError('Eroare la schimbarea parolei');
+        }
     };
 
     const handleAdd2FA = () => {
@@ -82,6 +127,10 @@ export default function Settings() {
         setPhoneNumber('');
         setEmailAddress('');
         setVerificationCode('');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setChangePasswordError('');
     };
 
     const handleAuthMethodChange = (method) => {
@@ -203,21 +252,24 @@ export default function Settings() {
                                     <h2>Change Password</h2>
                                 </div>
                                 <div className="modal-body">
+                                    {changePasswordError && (
+                                        <div style={{ color: 'red', marginBottom: 12 }} className="error-message">{changePasswordError}</div>
+                                    )}
                                     <div className="form-group">
                                         <label>Current Password</label>
-                                        <input type="password" className="form-input" placeholder="Enter current password" />
+                                        <input value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} type="password" className="form-input" placeholder="Enter current password" />
                                     </div>
                                     <div className="form-group">
                                         <label>New Password</label>
-                                        <input type="password" className="form-input" placeholder="Enter new password" />
+                                        <input value={newPassword} onChange={(e) => setNewPassword(e.target.value)} type="password" className="form-input" placeholder="Enter new password" />
                                     </div>
                                     <div className="form-group">
                                         <label>Confirm New Password</label>
-                                        <input type="password" className="form-input" placeholder="Confirm new password" />
+                                        <input value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} type="password" className="form-input" placeholder="Confirm new password" />
                                     </div>
                                 </div>
                                 <div className="modal-footer">
-                                    <button className="btn-save">Update Password</button>
+                                    <button className="btn-save" onClick={handleSubmitChangePassword}>Update Password</button>
                                     <button className="btn-cancel" onClick={closeModals}>Cancel</button>
                                 </div>
                             </div>

@@ -52,5 +52,13 @@ export class AuthController {
     });
   }
 
+  @Post('change-password')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Change current user password' })
+  changePassword(@Request() req, @Body() body: any) {
+    return this.authService.changePassword(req.user.id, body.currentPassword, body.newPassword, body.confirmPassword);
+  }
+
 
 }
