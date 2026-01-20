@@ -2,11 +2,13 @@
 import Link from 'next/link';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [transactions, setTransactions] = useState([]);
     const [user, setUser] = useState({ fullName: '', email: '' });
+    const router = useRouter();
 
     useEffect(() => {
         function decodeUserFromToken() {
@@ -112,7 +114,7 @@ export default function Dashboard() {
                                 <Link className='link' href="/settings"><i className="fas fa-cog"></i> Settings</Link>
                             </ol>
                             <ol className="logout">
-                                <Link className='link' href="../home"><i className="fas fa-sign-out-alt"></i> Logout</Link>
+                                <button className='link' onClick={() => { try { localStorage.removeItem('token'); localStorage.removeItem('user'); window.dispatchEvent(new Event('profileUpdated')); } catch (e) {} router.push('../home'); }}><i className="fas fa-sign-out-alt"></i> Logout</button>
                             </ol>
                         </ul>
                     </nav>

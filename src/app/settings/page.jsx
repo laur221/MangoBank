@@ -2,9 +2,11 @@
 import Link from 'next/link';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Settings() {
     const [user, setUser] = useState({ fullName: '', email: '' });
+    const router = useRouter();
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [show2FAModal, setShow2FAModal] = useState(false);
     const [showNotificationModal, setShowNotificationModal] = useState(false);
@@ -186,7 +188,7 @@ export default function Settings() {
                                     <Link className='link' href="#"><i className="fas fa-cog"></i> Settings</Link>
                                 </ol>
                                 <ol className="logout">
-                                    <Link className='link' href="../home"><i className="fas fa-sign-out-alt"></i> Logout</Link>
+                                    <button className='link' onClick={() => { try { localStorage.removeItem('token'); localStorage.removeItem('user'); window.dispatchEvent(new Event('profileUpdated')); } catch (e) {} router.push('../home'); }}><i className="fas fa-sign-out-alt"></i> Logout</button>
                                 </ol>
                             </ul>
                         </nav>

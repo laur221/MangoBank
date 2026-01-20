@@ -2,9 +2,11 @@
 import Link from 'next/link';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Profile() {
     const [user, setUser] = useState({ fullName: '', email: '' });
+    const router = useRouter();
     const [userData, setUserData] = useState({
         fullName: '',
         email: '',
@@ -14,7 +16,7 @@ export default function Profile() {
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    
+
     // Verification states
     const [verification, setVerification] = useState({
         email: {
@@ -107,7 +109,7 @@ export default function Profile() {
         if (field === 'phoneNumber') {
             value = value.replace(/\D/g, '');
         }
-        
+
         setUserData(prev => ({
             ...prev,
             [field]: value
@@ -225,7 +227,7 @@ export default function Profile() {
     const handleVerificationCodeChange = (type, code) => {
         // Only allow numbers and limit to 6 digits
         const numericCode = code.replace(/\D/g, '').substring(0, 6);
-        
+
         setVerification(prev => {
             const newState = {
                 ...prev,
@@ -395,7 +397,15 @@ export default function Profile() {
                                 <Link className='link' href="/settings"><i className="fas fa-cog"></i> Settings</Link>
                             </ol>
                             <ol className="logout">
-                                <Link className='link' href="../home"><i className="fas fa-sign-out-alt"></i> Logout</Link>
+                                <button className='link' onClick={() => {
+                                    try {
+                                        localStorage.removeItem('token');
+                                        localStorage.removeItem('user');
+                                        window.dispatchEvent(new Event('profileUpdated'));
+                                    }
+                                    catch (e) { } router.push('../home');
+                                }}>
+                                    <i className="fas fa-sign-out-alt"></i> Logout</button>
                             </ol>
                         </ul>
                     </nav>

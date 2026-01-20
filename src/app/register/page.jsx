@@ -12,6 +12,13 @@ export default function RegisterPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // clear any existing auth state so registration/login won't be shadowed
+        try {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.dispatchEvent(new Event('profileUpdated'));
+        } catch (e) {}
+
         const fullName = e.target.fullName.value;
         const email = e.target.email.value;
         const password = e.target.password.value;
@@ -54,9 +61,28 @@ export default function RegisterPage() {
                 progress: undefined,
             });
 
-            setTimeout(() => {
-                router.push('./dashboard');
-            }, 2000);
+            try {
+                const loginRes = await fetch('http://localhost:3001/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                if (loginRes.ok) {
+                    const loginData = await loginRes.json();
+                    // save token and simple user info for sidebar fallback
+                    localStorage.setItem('token', loginData.access_token);
+                    try {
+                        localStorage.setItem('user', JSON.stringify({ fullName: loginData.user.fullName, email: loginData.user.email }));
+                    } catch (e) {}
+                    setTimeout(() => router.push('./dashboard'), 800);
+                } else {
+                    // if login failed, go to login page so user can authenticate
+                    setTimeout(() => router.push('./login'), 800);
+                }
+            } catch (e) {
+                setTimeout(() => router.push('/login'), 800);
+            }
         } catch (err) {
             toast.error(err.message, {
                 position: 'top-right',
@@ -93,7 +119,7 @@ export default function RegisterPage() {
                         <button className='button' type="submit">Register</button>
                     </form>
                     <div className="login">
-                        <p>Already have an account? <Link href="./login">Login</Link></p>
+                        <p>Already have an account? <Link href="/login">Login</Link></p>
                     </div>
                 </div>
             </div>

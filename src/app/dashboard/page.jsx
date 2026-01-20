@@ -3,6 +3,7 @@ import Link from 'next/link';
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Dashboard() {
     const [user, setUser] = useState({ fullName: '', email: '' });
@@ -10,6 +11,7 @@ export default function Dashboard() {
     const [income, setIncome] = useState(0);
     const [expenses, setExpenses] = useState(0);
     const [transactions, setTransactions] = useState([]);
+    const router = useRouter();
 
     useEffect(() => {
         function decodeUserFromToken() {
@@ -134,9 +136,12 @@ export default function Dashboard() {
                             <ol>
                                 <Link className='link' href="/settings"><i className="fas fa-cog"></i> Settings</Link>
                             </ol>
-                            <ol className="logout">
-                                <Link className='link' href="../home"><i className="fas fa-sign-out-alt"></i> Logout</Link>
-                            </ol>
+                                    <ol className="logout">
+                                            <button className='link' onClick={() => {
+                                                try { localStorage.removeItem('token'); localStorage.removeItem('user'); window.dispatchEvent(new Event('profileUpdated')); } catch (e) {}
+                                                router.push('../home');
+                                            }}><i className="fas fa-sign-out-alt"></i> Logout</button>
+                                    </ol>
                         </ul>
                     </nav>
                 </aside>
